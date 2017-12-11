@@ -41,9 +41,9 @@
     </if>
   </select>
   <select id="calcGradeDistribution" resultMap="BaseResultMap" parameterType="org.zclpro.db.grade.entity.GradeDistribution">
-  SELECT COUNT(*) as curusers,(SELECT t2.id FROM grade_info t2 WHERE t2.county_code = t1.county_code 
-          AND t2.required_experience &lt;= t1.experience
-    ORDER BY id desc 
+  	SELECT COUNT(*) as curusers,(SELECT t2.id FROM grade_info t2 WHERE t2.county_code = t1.county_code 
+         AND t2.required_experience &lt;= t1.experience
+    ORDER BY id DESC 
     limit 1) curgrade ,t1.county_code FROM `user_exp_int` t1 GROUP BY t1.county_code, curgrade  ORDER BY t1.county_code ,curgrade
   </select>
 </mapper>
