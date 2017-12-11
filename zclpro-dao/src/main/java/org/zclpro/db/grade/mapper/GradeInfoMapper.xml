@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.zclpro.db.grade.impl.GradeInfoMapper">
+  <resultMap id="BaseResultMap" type="org.zclpro.db.grade.entity.GradeInfo">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="grade" jdbcType="INTEGER" property="grade" />
+    <result column="required_experience" jdbcType="INTEGER" property="requiredExperience" />
+    <result column="grade_name" jdbcType="VARCHAR" property="gradeName" />
+    <result column="grade_icon" jdbcType="VARCHAR" property="gradeIcon" />
+    <result column="current_users" jdbcType="INTEGER" property="currentUsers" />
+    <result column="county_code" jdbcType="INTEGER" property="countyCode" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, grade, required_experience, grade_name, grade_icon, current_users, county_code
+  </sql>
+  <sql id="Simple_Column_List">
+    id, grade, required_experience, grade_name, grade_icon, current_users
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Simple_Column_List" />
+    from grade_info
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <insert id="insertSelective" parameterType="org.zclpro.db.grade.entity.GradeInfo">
+    insert into grade_info
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="grade != null">
+        grade,
+      </if>
+      <if test="requiredExperience != null">
+        required_experience,
+      </if>
+      <if test="gradeName != null">
+        grade_name,
+      </if>
+      <if test="gradeIcon != null">
+        grade_icon,
+      </if>
+      <if test="currentUsers != null">
+        current_users,
+      </if>
+      <if test="countyCode != null">
+        county_code,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="grade != null">
+        #{grade,jdbcType=INTEGER},
+      </if>
+      <if test="requiredExperience != null">
+        #{requiredExperience,jdbcType=INTEGER},
+      </if>
+      <if test="gradeName != null">
+        #{gradeName,jdbcType=VARCHAR},
+      </if>
+      <if test="gradeIcon != null">
+        #{gradeIcon,jdbcType=VARCHAR},
+      </if>
+      <if test="currentUsers != null">
+        #{currentUsers,jdbcType=INTEGER},
+      </if>
+      <if test="countyCode != null">
+        #{countyCode,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="org.zclpro.db.grade.entity.GradeInfo">
+    update grade_info
+    <set>
+      <if test="grade != null">
+        grade = #{grade,jdbcType=INTEGER},
+      </if>
+      <if test="requiredExperience != null">
+        required_experience = #{requiredExperience,jdbcType=INTEGER},
+      </if>
+      <if test="gradeName != null">
+        grade_name = #{gradeName,jdbcType=VARCHAR},
+      </if>
+      <if test="gradeIcon != null">
+        grade_icon = #{gradeIcon,jdbcType=VARCHAR},
+      </if>
+      <if test="currentUsers != null">
+        current_users = #{currentUsers,jdbcType=INTEGER},
+      </if>
+      <if test="countyCode != null">
+        county_code = #{countyCode,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="select" resultMap="BaseResultMap" parameterType="org.zclpro.db.grade.entity.GradeInfo">
+  	SELECT 
+  		t.id,
+  		t.grade,
+  		t.grade_name,
+  		t.grade_icon,
+  		t.current_users,
+  		t.county_code
+  	FROM
+  		grade_info t
+  	WHERE 1 = 1
+  	<if  test="countyCode != null">
+  	 AND t.county_code = #{countyCode,jdbcType=INTEGER}
+  	</if>
+</select>
+<select id="listGradeInfoKeySort" parameterType="java.lang.Integer" resultType="org.zclpro.db.grade.entity.GradeInfoKeySortNum">
+	SELECT 
+  		t.id as id,
+  		t.required_experience as requiredExperience
+  	FROM
+  		grade_info t
+  	WHERE 1 = 1
+  	<if  test="countyCode != null">
+  	 AND t.county_code = #{countyCode,jdbcType=INTEGER}
+  	</if>
+</select>
+  <update id="batchUpdate" parameterType="java.util.List" >  
+    <foreach collection="list" item="item" index="index" separator=";">  
+        UPDATE grade_info t  SET  t.grade_name = #{item.gradeName}, t.grade_icon = #{item.gradeIcon}  WHERE t.id = #{item.id}
+    </foreach>  
+ </update>
+ <update id="batchUpdateByIds" parameterType="java.util.List" > 
+ 	UPDATE grade_info t SET  t.current_users = 0 WHERE t.id in 
+    <foreach collection="list" index="index" item="item" 
+        separator="," open="(" close=")">
+        #{item,jdbcType=INTEGER}
+    </foreach> 
+ </update>
+</mapper>

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.zclpro.db.almanacinfo.impl.AlmanacInfoMapper">
+  <resultMap id="BaseResultMap" type="org.zclpro.db.almanacinfo.entity.AlmanacInfo">
+    <result column="specify_date" jdbcType="VARCHAR" property="specifyDate" />
+    <result column="avoid" jdbcType="VARCHAR" property="avoid" />
+    <result column="animals_year" jdbcType="VARCHAR" property="animalsYear" />
+    <result column="weekday" jdbcType="VARCHAR" property="weekday" />
+    <result column="suit" jdbcType="VARCHAR" property="suit" />
+    <result column="lunar_year" jdbcType="VARCHAR" property="lunarYear" />
+    <result column="date" jdbcType="VARCHAR" property="date" />
+    <result column="holiday" jdbcType="VARCHAR" property="holiday" />
+    <result column="lunar" jdbcType="VARCHAR" property="lunar" />
+    <result column="day" jdbcType="VARCHAR" property="day" />
+  </resultMap>
+  <insert id="insertSelective" parameterType="org.zclpro.db.almanacinfo.entity.AlmanacInfo">
+    insert into almanac_info
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="specifyDate != null">
+        specify_date,
+      </if>
+      <if test="avoid != null">
+        avoid,
+      </if>
+      <if test="animalsYear != null">
+        animals_year,
+      </if>
+      <if test="weekday != null">
+        weekday,
+      </if>
+      <if test="suit != null">
+        suit,
+      </if>
+      <if test="lunarYear != null">
+        lunar_year,
+      </if>
+      <if test="date != null">
+        date,
+      </if>
+      <if test="holiday != null">
+        holiday,
+      </if>
+      <if test="lunar != null">
+        lunar,
+      </if>
+      <if test="day != null">
+        day,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="specifyDate != null">
+        #{specifyDate,jdbcType=VARCHAR},
+      </if>
+      <if test="avoid != null">
+        #{avoid,jdbcType=VARCHAR},
+      </if>
+      <if test="animalsYear != null">
+        #{animalsYear,jdbcType=VARCHAR},
+      </if>
+      <if test="weekday != null">
+        #{weekday,jdbcType=VARCHAR},
+      </if>
+      <if test="suit != null">
+        #{suit,jdbcType=VARCHAR},
+      </if>
+      <if test="lunarYear != null">
+        #{lunarYear,jdbcType=VARCHAR},
+      </if>
+      <if test="date != null">
+        #{date,jdbcType=VARCHAR},
+      </if>
+      <if test="holiday != null">
+        #{holiday,jdbcType=VARCHAR},
+      </if>
+      <if test="lunar != null">
+        #{lunar,jdbcType=VARCHAR},
+      </if>
+      <if test="day != null">
+        #{day,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <insert id="saveOrUpdate" parameterType="org.zclpro.db.almanacinfo.entity.AlmanacInfo">
+  INSERT INTO almanac_info(specify_date,avoid,animals_year,weekday,suit,lunar_year,date,holiday,lunar,day) VALUES
+  		(#{specifyDate,jdbcType=VARCHAR}, #{avoid,jdbcType=VARCHAR},#{animalsYear,jdbcType=VARCHAR},#{weekday,jdbcType=VARCHAR},
+  		#{suit,jdbcType=VARCHAR},#{lunarYear,jdbcType=VARCHAR},#{date,jdbcType=VARCHAR},#{holiday,jdbcType=VARCHAR},#{lunar,jdbcType=VARCHAR},#{day,jdbcType=VARCHAR})
+	ON DUPLICATE KEY UPDATE
+	specify_date = VALUES(specify_date),
+	avoid = VALUES(avoid),
+	animals_year = VALUES(animals_year),
+	weekday = VALUES(weekday),
+	suit = VALUES(suit),
+	lunar_year = VALUES(lunar_year),
+	date = VALUES(date),
+	holiday = VALUES(holiday),
+	lunar = VALUES(lunar),
+	day = VALUES(day);
+  </insert>
+</mapper>

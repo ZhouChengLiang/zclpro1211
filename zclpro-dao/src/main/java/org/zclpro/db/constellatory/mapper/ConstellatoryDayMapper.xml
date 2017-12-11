@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.zclpro.db.constellatory.impl.ConstellatoryDayMapper">
+  <resultMap id="BaseResultMap" type="org.zclpro.db.constellatory.entity.ConstellatoryDay">
+    <result column="date_id" jdbcType="VARCHAR" property="dateId" />
+    <result column="date" jdbcType="VARCHAR" property="date" />
+    <result column="code" jdbcType="INTEGER" property="code" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="datetime_str" jdbcType="VARCHAR" property="datetimeStr" />
+    <result column="all" jdbcType="VARCHAR" property="all" />
+    <result column="work" jdbcType="VARCHAR" property="work" />
+    <result column="health" jdbcType="VARCHAR" property="health" />
+    <result column="love" jdbcType="VARCHAR" property="love" />
+    <result column="money" jdbcType="VARCHAR" property="money" />
+    <result column="color" jdbcType="VARCHAR" property="color" />
+    <result column="number" jdbcType="VARCHAR" property="number" />
+    <result column="friend" jdbcType="VARCHAR" property="friend" />
+    <result column="summary" jdbcType="VARCHAR" property="summary" />
+  </resultMap>
+  <insert id="insert" parameterType="org.zclpro.db.constellatory.entity.ConstellatoryDay">
+    insert into constellatory_day (date_id, date, code, 
+      name, datetime_str, all, 
+      work, health, love, 
+      money, color, number, 
+      friend, summary)
+    values (#{dateId,jdbcType=VARCHAR}, #{date,jdbcType=VARCHAR}, #{code,jdbcType=INTEGER}, 
+      #{name,jdbcType=VARCHAR}, #{datetimeStr,jdbcType=VARCHAR}, #{all,jdbcType=VARCHAR}, 
+      #{work,jdbcType=VARCHAR}, #{health,jdbcType=VARCHAR}, #{love,jdbcType=VARCHAR}, 
+      #{money,jdbcType=VARCHAR}, #{color,jdbcType=VARCHAR}, #{number,jdbcType=VARCHAR}, 
+      #{friend,jdbcType=VARCHAR}, #{summary,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="org.zclpro.db.constellatory.entity.ConstellatoryDay">
+    insert into constellatory_day
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="dateId != null">
+        date_id,
+      </if>
+      <if test="date != null">
+        date,
+      </if>
+      <if test="code != null">
+        code,
+      </if>
+      <if test="name != null">
+        name,
+      </if>
+      <if test="datetimeStr != null">
+        datetime_str,
+      </if>
+      <if test="all != null">
+        all,
+      </if>
+      <if test="work != null">
+        work,
+      </if>
+      <if test="health != null">
+        health,
+      </if>
+      <if test="love != null">
+        love,
+      </if>
+      <if test="money != null">
+        money,
+      </if>
+      <if test="color != null">
+        color,
+      </if>
+      <if test="number != null">
+        number,
+      </if>
+      <if test="friend != null">
+        friend,
+      </if>
+      <if test="summary != null">
+        summary,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="dateId != null">
+        #{dateId,jdbcType=VARCHAR},
+      </if>
+      <if test="date != null">
+        #{date,jdbcType=VARCHAR},
+      </if>
+      <if test="code != null">
+        #{code,jdbcType=INTEGER},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="datetimeStr != null">
+        #{datetimeStr,jdbcType=VARCHAR},
+      </if>
+      <if test="all != null">
+        #{all,jdbcType=VARCHAR},
+      </if>
+      <if test="work != null">
+        #{work,jdbcType=VARCHAR},
+      </if>
+      <if test="health != null">
+        #{health,jdbcType=VARCHAR},
+      </if>
+      <if test="love != null">
+        #{love,jdbcType=VARCHAR},
+      </if>
+      <if test="money != null">
+        #{money,jdbcType=VARCHAR},
+      </if>
+      <if test="color != null">
+        #{color,jdbcType=VARCHAR},
+      </if>
+      <if test="number != null">
+        #{number,jdbcType=VARCHAR},
+      </if>
+      <if test="friend != null">
+        #{friend,jdbcType=VARCHAR},
+      </if>
+      <if test="summary != null">
+        #{summary,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <insert id="saveOrUpdate" parameterType="org.zclpro.db.constellatory.entity.ConstellatoryDay">
+  	INSERT INTO constellatory_day(date_id,date,code,name,datetime_str,alls,work,health,love,money,color,number,friend,summary) VALUES
+  		(#{dateId,jdbcType=VARCHAR}, #{date,jdbcType=VARCHAR}, #{code,jdbcType=INTEGER}, 
+      #{name,jdbcType=VARCHAR}, #{datetimeStr,jdbcType=VARCHAR}, #{alls,jdbcType=VARCHAR}, 
+      #{work,jdbcType=VARCHAR}, #{health,jdbcType=VARCHAR}, #{love,jdbcType=VARCHAR}, 
+      #{money,jdbcType=VARCHAR}, #{color,jdbcType=VARCHAR}, #{number,jdbcType=VARCHAR}, 
+      #{friend,jdbcType=VARCHAR}, #{summary,jdbcType=VARCHAR})
+	ON DUPLICATE KEY UPDATE
+	date_id = VALUES(date_id),date = VALUES(date),
+	code = VALUES(code),name = VALUES(name),
+	datetime_str = VALUES(datetime_str),alls = VALUES(alls),
+	date = VALUES(date),work = VALUES(work),
+	health = VALUES(health),love = VALUES(love),
+	money = VALUES(money),color = VALUES(color),
+	number = VALUES(number),friend = VALUES(friend),
+	summary = VALUES(summary);
+  </insert>
+  <insert id="batchSaveOrUpdate" parameterType="java.util.List">
+  	INSERT INTO constellatory_day(date_id,date,code,name,datetime_str,alls,work,health,love,money,color,number,friend,summary) VALUES
+  		<foreach collection="list" item="item" index="index" separator=",">
+			( #{item.dateId,jdbcType=VARCHAR}, #{item.date,jdbcType=VARCHAR}, #{item.code,jdbcType=INTEGER}, 
+		      #{item.name,jdbcType=VARCHAR}, #{item.datetimeStr,jdbcType=VARCHAR}, #{item.alls,jdbcType=VARCHAR}, 
+		      #{item.work,jdbcType=VARCHAR}, #{item.health,jdbcType=VARCHAR}, #{item.love,jdbcType=VARCHAR}, 
+		      #{item.money,jdbcType=VARCHAR}, #{item.color,jdbcType=VARCHAR}, #{item.number,jdbcType=VARCHAR}, 
+		      #{item.friend,jdbcType=VARCHAR}, #{item.summary,jdbcType=VARCHAR})
+		</foreach>
+	ON DUPLICATE KEY UPDATE
+	date_id = VALUES(date_id),date = VALUES(date),
+	code = VALUES(code),name = VALUES(name),
+	datetime_str = VALUES(datetime_str),alls = VALUES(alls),
+	date = VALUES(date),work = VALUES(work),
+	health = VALUES(health),love = VALUES(love),
+	money = VALUES(money),color = VALUES(color),
+	number = VALUES(number),friend = VALUES(friend),
+	summary = VALUES(summary);
+  </insert>
+</mapper>

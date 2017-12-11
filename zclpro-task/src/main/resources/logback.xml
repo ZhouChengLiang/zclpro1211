@@ -1,0 +1,51 @@
+<configuration>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%date [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="successFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${log4j.file.path}/task/success.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${log4j.file.path}/task/success.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>3GB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%date [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+    <appender name="error_file" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${log4j.file.path}/task/error.log</file>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${log4j.file.path}/task/error.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>3GB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%date [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="org.springframework" level="info"/>
+    <logger name="com.mchange" level="warn"/>
+    <logger name="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping" level="debug"/>
+    <logger name="org.springframework.context.annotation.ClassPathBeanDefinitionScanner" level="warn"/>
+    <logger name="org.mybatis.spring.SqlSessionFactoryBean" level="warn"/>
+    <logger name="org.mybatis.spring.mapper.ClassPathMapperScanner" level="error"/>
+    <logger name="org.apache.shiro.web" level="warn"/>
+    <logger name="org.apache.http.wire" level="warn"/>
+
+    <root level="debug">
+        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="error_file"/>
+        <appender-ref ref="successFile"/>
+    </root>
+</configuration>

@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.zclpro.db.constellatory.impl.ConstellatoryMonthMapper">
+  <resultMap id="BaseResultMap" type="org.zclpro.db.constellatory.entity.ConstellatoryMonth">
+    <result column="year" jdbcType="VARCHAR" property="year" />
+    <result column="month" jdbcType="INTEGER" property="month" />
+    <result column="date" jdbcType="VARCHAR" property="date" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="code" jdbcType="INTEGER" property="code" />
+    <result column="alls" jdbcType="VARCHAR" property="alls" />
+    <result column="health" jdbcType="VARCHAR" property="health" />
+    <result column="love" jdbcType="VARCHAR" property="love" />
+    <result column="money" jdbcType="VARCHAR" property="money" />
+    <result column="work" jdbcType="VARCHAR" property="work" />
+    <result column="happy_magic" jdbcType="VARCHAR" property="happyMagic" />
+  </resultMap>
+  <insert id="insert" parameterType="org.zclpro.db.constellatory.entity.ConstellatoryMonth">
+    insert into constellatory_month (year, month, date, 
+      name, code, alls, health, 
+      love, money, work, 
+      happy_magic)
+    values (#{year,jdbcType=VARCHAR}, #{month,jdbcType=INTEGER}, #{date,jdbcType=VARCHAR}, 
+      #{name,jdbcType=VARCHAR}, #{code,jdbcType=INTEGER}, #{alls,jdbcType=VARCHAR}, #{health,jdbcType=VARCHAR}, 
+      #{love,jdbcType=VARCHAR}, #{money,jdbcType=VARCHAR}, #{work,jdbcType=VARCHAR}, 
+      #{happyMagic,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="org.zclpro.db.constellatory.entity.ConstellatoryMonth">
+    insert into constellatory_month
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="year != null">
+        year,
+      </if>
+      <if test="month != null">
+        month,
+      </if>
+      <if test="date != null">
+        date,
+      </if>
+      <if test="name != null">
+        name,
+      </if>
+      <if test="code != null">
+        code,
+      </if>
+      <if test="alls != null">
+        alls,
+      </if>
+      <if test="health != null">
+        health,
+      </if>
+      <if test="love != null">
+        love,
+      </if>
+      <if test="money != null">
+        money,
+      </if>
+      <if test="work != null">
+        work,
+      </if>
+      <if test="happyMagic != null">
+        happy_magic,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="year != null">
+        #{year,jdbcType=VARCHAR},
+      </if>
+      <if test="month != null">
+        #{month,jdbcType=INTEGER},
+      </if>
+      <if test="date != null">
+        #{date,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="code != null">
+        #{code,jdbcType=INTEGER},
+      </if>
+      <if test="alls != null">
+        #{alls,jdbcType=VARCHAR},
+      </if>
+      <if test="health != null">
+        #{health,jdbcType=VARCHAR},
+      </if>
+      <if test="love != null">
+        #{love,jdbcType=VARCHAR},
+      </if>
+      <if test="money != null">
+        #{money,jdbcType=VARCHAR},
+      </if>
+      <if test="work != null">
+        #{work,jdbcType=VARCHAR},
+      </if>
+      <if test="happyMagic != null">
+        #{happyMagic,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <insert id="saveOrUpdate" parameterType="org.zclpro.db.constellatory.entity.ConstellatoryMonth">
+  	INSERT INTO constellatory_month(year, month, date, name, code, alls, health, love, money, work, happy_magic) VALUES
+  		(#{year,jdbcType=VARCHAR}, #{month,jdbcType=INTEGER}, #{date,jdbcType=VARCHAR}, 
+      #{name,jdbcType=VARCHAR}, #{code,jdbcType=INTEGER}, #{alls,jdbcType=VARCHAR}, #{health,jdbcType=VARCHAR}, 
+      #{love,jdbcType=VARCHAR}, #{money,jdbcType=VARCHAR}, #{work,jdbcType=VARCHAR}, 
+      #{happyMagic,jdbcType=VARCHAR})
+	ON DUPLICATE KEY UPDATE
+	year = VALUES(year),month = VALUES(month),
+	date = VALUES(date),name = VALUES(name),
+	code = VALUES(code),alls = VALUES(alls),
+	health = VALUES(health),love = VALUES(love),
+	money = VALUES(money),work = VALUES(work),happy_magic = VALUES(happy_magic);
+  </insert>
+  <insert id="batchSaveOrUpdate" parameterType="java.util.List">
+  	INSERT INTO constellatory_month(year, month, date, name, code, alls, health, love, money, work, happy_magic) VALUES
+  		<foreach collection="list" item="item" index="index" separator=",">
+	  		(#{item.year,jdbcType=VARCHAR}, #{item.month,jdbcType=INTEGER}, #{item.date,jdbcType=VARCHAR}, 
+	      	#{item.name,jdbcType=VARCHAR}, #{item.code,jdbcType=INTEGER}, #{item.alls,jdbcType=VARCHAR}, #{item.health,jdbcType=VARCHAR}, 
+	      	#{item.love,jdbcType=VARCHAR}, #{item.money,jdbcType=VARCHAR}, #{item.work,jdbcType=VARCHAR}, 
+	      	#{item.happyMagic,jdbcType=VARCHAR})
+	    </foreach>
+	ON DUPLICATE KEY UPDATE
+	year = VALUES(year),month = VALUES(month),
+	date = VALUES(date),name = VALUES(name),
+	code = VALUES(code),alls = VALUES(alls),
+	health = VALUES(health),love = VALUES(love),
+	money = VALUES(money),work = VALUES(work),happy_magic = VALUES(happy_magic);
+  </insert>
+</mapper>

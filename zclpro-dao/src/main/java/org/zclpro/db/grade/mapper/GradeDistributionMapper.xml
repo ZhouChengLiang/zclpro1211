@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.zclpro.db.grade.impl.GradeDistributionMapper">
+  <resultMap id="BaseResultMap" type="org.zclpro.db.grade.entity.GradeDistribution">
+    <result column="curdate" jdbcType="VARCHAR" property="curdate" />
+    <result column="curgrade" jdbcType="INTEGER" property="curgrade" />
+    <result column="curexp" jdbcType="INTEGER" property="curexp" />
+    <result column="curusers" jdbcType="INTEGER" property="curusers" />
+    <result column="curtime" jdbcType="TIMESTAMP" property="curtime" />
+    <result column="county_code" jdbcType="INTEGER" property="countyCode" />
+  </resultMap>
+ <insert id="saveOrUpdate" parameterType="org.zclpro.db.grade.entity.GradeDistribution">
+	  INSERT INTO grade_distribution(curdate, curgrade, curexp,curusers,curtime,county_code) VALUES
+	  		(#{curdate,jdbcType=VARCHAR}, #{curgrade,jdbcType=INTEGER}, #{curexp,jdbcType=INTEGER},#{curusers,jdbcType=INTEGER},#{curtime,jdbcType=TIMESTAMP},#{countyCode,jdbcType=INTEGER})
+		ON DUPLICATE KEY UPDATE
+		curdate = VALUES(curdate),
+		curgrade = VALUES(curgrade),
+		curexp = VALUES(curexp),
+		curusers = VALUES(curusers),
+		curtime = VALUES(curtime),
+		county_code = VALUES(county_code);
+  </insert>
+  
+  <select id="queryGradeDistribution" resultMap="BaseResultMap" parameterType="org.zclpro.db.grade.entity.GradeDistribution">
+  	SELECT 
+     t.curdate,
+     t.curgrade,
+     t.curusers,
+     t.curexp,
+     t.county_code
+  	FROM grade_distribution t 
+  	WHERE 1 = 1
+  	<if  test="countyCode != null">
+  	 AND t.county_code = #{countyCode,jdbcType=INTEGER}
+  	</if>
+  	<if test="startTime != null">
+     AND t.curtime &gt;= #{startTime,jdbcType=TIMESTAMP}
+    </if>
+    <if test="endTime != null">
+     AND t.curtime &lt;= #{endTime,jdbcType=TIMESTAMP}
+    </if>
+  </select>
+</mapper>

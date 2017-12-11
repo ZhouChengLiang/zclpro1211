@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.zclpro.db.configmanage.impl.ConfigManageMapper">
+  <resultMap id="BaseResultMap" type="org.zclpro.db.configmanage.entity.ConfigManage">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="config_type" jdbcType="INTEGER" property="configType" />
+    <result column="config_status" jdbcType="INTEGER" property="configStatus" />
+    <result column="county_code" jdbcType="INTEGER" property="countyCode" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, config_type, config_status, county_code
+  </sql>
+  <insert id="insertSelective" parameterType="org.zclpro.db.configmanage.entity.ConfigManage">
+    insert into config_manage
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="configType != null">
+        config_type,
+      </if>
+      <if test="configStatus != null">
+        config_status,
+      </if>
+      <if test="countyCode != null">
+        county_code,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="configType != null">
+        #{configType,jdbcType=INTEGER},
+      </if>
+      <if test="configStatus != null">
+        #{configStatus,jdbcType=INTEGER},
+      </if>
+      <if test="countyCode != null">
+        #{countyCode,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="org.zclpro.db.configmanage.entity.ConfigManage">
+    update config_manage
+    <set>
+      <if test="configType != null">
+        config_type = #{configType,jdbcType=INTEGER},
+      </if>
+      <if test="configStatus != null">
+        config_status = #{configStatus,jdbcType=INTEGER},
+      </if>
+      <if test="countyCode != null">
+        county_code = #{countyCode,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from config_manage
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" parameterType="org.zclpro.db.configmanage.entity.ConfigManage">
+  	SELECT 
+  		<include refid="Base_Column_List" />
+  	FROM config_manage
+  	WHERE 1 = 1
+  	<if test="configType != null">
+       AND config_type = #{configType,jdbcType=INTEGER}
+     </if>
+     <if test="configStatus != null">
+       AND config_status = #{configStatus,jdbcType=INTEGER}
+     </if>
+     <if test="countyCode != null">
+       AND county_code = #{countyCode,jdbcType=INTEGER}
+     </if>
+     order by id 
+  </select>
+  <select id="selectConfigBy" resultMap="BaseResultMap" parameterType="map">
+  	SELECT 
+  		<include refid="Base_Column_List" />
+  	FROM config_manage
+  	WHERE 1 = 1
+  	<if test="configType != null">
+       AND config_type = #{configType,jdbcType=INTEGER}
+     </if>
+     <if test="countyCode != null">
+       AND county_code = #{countyCode,jdbcType=INTEGER}
+     </if>
+     order by id 
+  </select>
+  <update id="toggle" parameterType="org.zclpro.db.configmanage.entity.ConfigManage">
+  	update config_manage
+      set  config_status = !#{configStatus,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

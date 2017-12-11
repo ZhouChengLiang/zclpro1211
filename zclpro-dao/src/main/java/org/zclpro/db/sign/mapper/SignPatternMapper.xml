@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.zclpro.db.sign.impl.SignPatternMapper">
+  <resultMap id="BaseResultMap" type="org.zclpro.db.sign.entity.SignPattern">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="sign_type" jdbcType="INTEGER" property="signType" />
+    <result column="sign_status" jdbcType="INTEGER" property="signStatus" />
+    <result column="sign_loopcycle" jdbcType="INTEGER" property="signLoopcycle" />
+    <result column="sign_perioddays" jdbcType="INTEGER" property="signPerioddays" />
+    <result column="sign_continuous" jdbcType="INTEGER" property="signContinuous" />
+    <result column="county_code" jdbcType="INTEGER" property="countyCode" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, sign_type, sign_status, sign_loopcycle, sign_perioddays, sign_continuous, 
+    county_code
+  </sql>
+  <sql id="Simple_Column_List">
+    id, sign_type, sign_status
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sign_pattern
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <insert id="insertSelective" parameterType="org.zclpro.db.sign.entity.SignPattern">
+    insert into sign_pattern
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="signType != null">
+        sign_type,
+      </if>
+      <if test="signStatus != null">
+        sign_status,
+      </if>
+      <if test="signLoopcycle != null">
+        sign_loopcycle,
+      </if>
+      <if test="signPerioddays != null">
+        sign_perioddays,
+      </if>
+      <if test="signContinuous != null">
+        sign_continuous,
+      </if>
+      <if test="countyCode != null">
+        county_code,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="signType != null">
+        #{signType,jdbcType=INTEGER},
+      </if>
+      <if test="signStatus != null">
+        #{signStatus,jdbcType=INTEGER},
+      </if>
+      <if test="signLoopcycle != null">
+        #{signLoopcycle,jdbcType=INTEGER},
+      </if>
+      <if test="signPerioddays != null">
+        #{signPerioddays,jdbcType=INTEGER},
+      </if>
+      <if test="signContinuous != null">
+        #{signContinuous,jdbcType=INTEGER},
+      </if>
+      <if test="countyCode != null">
+        #{countyCode,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="org.zclpro.db.sign.entity.SignPattern">
+    update sign_pattern
+    <set>
+      <if test="signType != null">
+        sign_type = #{signType,jdbcType=INTEGER},
+      </if>
+      <if test="signStatus != null">
+        sign_status = #{signStatus,jdbcType=INTEGER},
+      </if>
+      <if test="signLoopcycle != null">
+        sign_loopcycle = #{signLoopcycle,jdbcType=INTEGER},
+      </if>
+      <if test="signPerioddays != null">
+        sign_perioddays = #{signPerioddays,jdbcType=INTEGER},
+      </if>
+      <if test="signContinuous != null">
+        sign_continuous = #{signContinuous,jdbcType=INTEGER},
+      </if>
+      <if test="countyCode != null">
+        county_code = #{countyCode,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectByCondition" parameterType="org.zclpro.db.sign.entity.SignPattern" resultMap="BaseResultMap">
+    SELECT 
+    <include refid="Base_Column_List" />
+    	FROM sign_pattern
+    WHERE 1 = 1 
+  	 <if  test="countyCode != null">
+  	 	AND county_code = #{countyCode,jdbcType=INTEGER}
+  	 </if>
+  	 <if  test="signStatus != null">
+  	 	AND sign_status = #{signStatus,jdbcType=INTEGER}
+  	 </if>
+  	 <if  test="signType != null">
+  	 	AND sign_type = #{signType,jdbcType=INTEGER}
+  	 </if>
+  </select>
+  <update id="updateOtherSignPattern" parameterType="org.zclpro.db.sign.entity.SignPattern">
+    update sign_pattern
+    SET 
+      sign_status = #{signStatus,jdbcType=INTEGER}
+        where id != #{id,jdbcType=INTEGER} and county_code = #{countyCode,jdbcType=INTEGER}
+  </update>
+</mapper>

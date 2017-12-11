@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.zclpro.db.sign.impl.SignRecordMapper">
+  <resultMap id="BaseResultMap" type="org.zclpro.db.sign.entity.SignRecord">
+    <result column="userid" jdbcType="INTEGER" property="userid" />
+    <result column="lastdate" jdbcType="VARCHAR" property="lastdate" />
+    <result column="serialdays" jdbcType="INTEGER" property="serialdays" />
+    <result column="county_code" jdbcType="INTEGER" property="countyCode" />
+    <result column="sign_type" jdbcType="INTEGER" property="signType" />
+    <result column="sign_days" jdbcType="INTEGER" property="signDays" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    userid, lastdate, serialdays, sign_type, sign_days
+  </sql>
+  <insert id="insert" parameterType="org.zclpro.db.sign.entity.SignRecord">
+    insert into sign_record (userid, lastdate, serialdays, 
+      county_code, sign_type, sign_days)
+    values (#{userid,jdbcType=INTEGER}, #{lastdate,jdbcType=VARCHAR}, #{serialdays,jdbcType=INTEGER}, 
+      #{countyCode,jdbcType=INTEGER}, #{signType,jdbcType=INTEGER}, #{signDays,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="org.zclpro.db.sign.entity.SignRecord">
+    insert into sign_record
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="userid != null">
+        userid,
+      </if>
+      <if test="lastdate != null">
+        lastdate,
+      </if>
+      <if test="serialdays != null">
+        serialdays,
+      </if>
+      <if test="countyCode != null">
+        county_code,
+      </if>
+      <if test="signType != null">
+        sign_type,
+      </if>
+      <if test="signDays != null">
+        sign_days,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="userid != null">
+        #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="lastdate != null">
+        #{lastdate,jdbcType=VARCHAR},
+      </if>
+      <if test="serialdays != null">
+        #{serialdays,jdbcType=INTEGER},
+      </if>
+      <if test="countyCode != null">
+        #{countyCode,jdbcType=INTEGER},
+      </if>
+      <if test="signType != null">
+        #{signType,jdbcType=INTEGER},
+      </if>
+      <if test="signDays != null">
+        #{signDays,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <select id="selectRecordBy" parameterType="org.zclpro.db.sign.entity.SignRecord" resultMap="BaseResultMap">
+    SELECT 
+    <include refid="Base_Column_List" />
+    	FROM sign_record
+    WHERE 1 = 1 
+    <if  test="userid != null">
+  	 	AND userid = #{userid,jdbcType=INTEGER}
+  	 </if>
+  	 <if  test="countyCode != null">
+  	 	AND county_code = #{countyCode,jdbcType=INTEGER}
+  	 </if>
+  </select>
+  <insert id="saveOrUpdate" parameterType="org.zclpro.db.sign.entity.SignRecord">
+  INSERT INTO sign_record(userid,lastdate,serialdays,county_code,sign_type,sign_days) VALUES
+  		(#{userid,jdbcType=INTEGER}, #{lastdate,jdbcType=VARCHAR},#{serialdays,jdbcType=INTEGER},#{countyCode,jdbcType=INTEGER},#{signType,jdbcType=INTEGER}, #{signDays,jdbcType=INTEGER})
+	ON DUPLICATE KEY UPDATE
+	userid = VALUES(userid),
+	lastdate = VALUES(lastdate),
+	serialdays = VALUES(serialdays),
+	county_code = VALUES(county_code),
+	sign_type = VALUES(sign_type),
+	sign_days = VALUES(sign_days);
+  </insert>
+</mapper>
