@@ -8,4 +8,6 @@ public interface GradeDistributionMapper {
 	int saveOrUpdate(GradeDistribution record);
 
 	List<GradeDistribution> queryGradeDistribution(GradeDistribution record);
+	
+	List<GradeDistribution> calcGradeDistribution();
 }
