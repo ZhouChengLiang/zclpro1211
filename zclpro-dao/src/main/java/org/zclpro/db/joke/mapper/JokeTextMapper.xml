@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.zclpro.db.joke.impl.JokeTextMapper">
+  <resultMap id="BaseResultMap" type="org.zclpro.db.joke.entity.JokeText">
+    <result column="hash_id" jdbcType="VARCHAR" property="hashId" />
+    <result column="content" jdbcType="VARCHAR" property="content" />
+    <result column="unixtime" jdbcType="INTEGER" property="unixtime" />
+    <result column="updatetime" jdbcType="TIMESTAMP" property="updatetime" />
+  </resultMap>
+  <insert id="insert" parameterType="org.zclpro.db.joke.entity.JokeText">
+    insert into joke_text (hash_id, content, unixtime, 
+      updatetime)
+    values (#{hashId,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR}, #{unixtime,jdbcType=INTEGER}, 
+      #{updatetime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="org.zclpro.db.joke.entity.JokeText">
+    insert into joke_text
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="hashId != null">
+        hash_id,
+      </if>
+      <if test="content != null">
+        content,
+      </if>
+      <if test="unixtime != null">
+        unixtime,
+      </if>
+      <if test="updatetime != null">
+        updatetime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="hashId != null">
+        #{hashId,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null">
+        #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="unixtime != null">
+        #{unixtime,jdbcType=INTEGER},
+      </if>
+      <if test="updatetime != null">
+        #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+</mapper>
