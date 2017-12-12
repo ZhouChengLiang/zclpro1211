@@ -102,7 +102,7 @@ public class ConstellatoryCache extends BaseCache {
 				dayWithMonthYear = curdate.plusDays(1).toString("yyyyMMdd");
 			}
 			byte[] cacheKey = StringManager
-					.formatKeyString("consCode:{0}:day:{1} ", constellatoryEnum.getCode().toString(), dayWithMonthYear)
+					.formatKeyString("consCode:{0}:day:{1}", constellatoryEnum.getCode().toString(), dayWithMonthYear)
 					.getBytes(Charsets.UTF_8);
 			byte[] redisBytes = redisCache.get(cacheKey);
 			if (redisBytes != null) {
