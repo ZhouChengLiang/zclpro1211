@@ -34,6 +34,9 @@ import org.zclpro.service.enums.FortuneConditionEnum;
 
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.base.Objects;
+import com.mysql.jdbc.StringUtils;
+
+import lombok.Data;
 
 @Service
 public class ConstellatoryCache extends BaseCache {
@@ -43,6 +46,8 @@ public class ConstellatoryCache extends BaseCache {
 	private final static String APPKEY = stringManager.getValue("appkey");
 
 	private final static String URL = stringManager.getValue("url");
+	
+	private final static String CONSTELLATORY_CACGE_KEY = "consCode:{0}:type:{1}";
 
 	private DayHandler dayHandler = new DayHandler();
 
@@ -201,11 +206,10 @@ public class ConstellatoryCache extends BaseCache {
 		for (FortuneConditionEnum fortuneConditionEnum : FortuneConditionEnum.values()) {
 			executor.execute(new HandleConstellatory(fortuneConditionEnum));
 			// executor.submit(new HandleConstellatory(fortuneConditionEnum));
-			/*try {
-				Thread.sleep(2500);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}*/
+			/*
+			 * try { Thread.sleep(2500); } catch (InterruptedException e) {
+			 * e.printStackTrace(); }
+			 */
 		}
 		executor.shutdown();
 	}
@@ -276,23 +280,27 @@ public class ConstellatoryCache extends BaseCache {
 			if (!CollectionUtils.isEmpty(constellatoryDayList)) {
 				Instant c1 = Instant.now();
 				constellatoryDayMapper.batchSaveOrUpdate(constellatoryDayList);
-				System.out.println("constellatoryDayMapper.batchSaveOrUpdate>>>>>>" + Duration.between(c1, Instant.now()));
+				System.out.println(
+						"constellatoryDayMapper.batchSaveOrUpdate>>>>>>" + Duration.between(c1, Instant.now()));
 			}
 			if (!CollectionUtils.isEmpty(constellatoryWeekList)) {
 				Instant c1 = Instant.now();
 				constellatoryWeekMapper.batchSaveOrUpdate(constellatoryWeekList);
-				System.out.println("constellatoryWeekMapper.batchSaveOrUpdate>>>>>>" + Duration.between(c1, Instant.now()));
+				System.out.println(
+						"constellatoryWeekMapper.batchSaveOrUpdate>>>>>>" + Duration.between(c1, Instant.now()));
 			}
 			if (!CollectionUtils.isEmpty(constellatoryMonthList)) {
 				Instant c1 = Instant.now();
 				constellatoryMonthMapper.batchSaveOrUpdate(constellatoryMonthList);
-				System.out.println("constellatoryMonthMapper.batchSaveOrUpdate>>>>>>" + Duration.between(c1, Instant.now()));
+				System.out.println(
+						"constellatoryMonthMapper.batchSaveOrUpdate>>>>>>" + Duration.between(c1, Instant.now()));
 			}
 			if (!CollectionUtils.isEmpty(constellatoryYearList)) {
 				System.out.println(constellatoryYearList.isEmpty());
 				Instant c1 = Instant.now();
 				constellatoryYearMapper.batchSaveOrUpdate(constellatoryYearList);
-				System.out.println("constellatoryYearMapper.batchSaveOrUpdate>>>>>>" + Duration.between(c1, Instant.now()));
+				System.out.println(
+						"constellatoryYearMapper.batchSaveOrUpdate>>>>>>" + Duration.between(c1, Instant.now()));
 			}
 		}
 
@@ -305,32 +313,28 @@ public class ConstellatoryCache extends BaseCache {
 		ExecutorService executor = Executors.newCachedThreadPool();
 		// 处理 today,tomorrow
 		executor.execute(() -> pullRemoteConstellatory(dayHandler));
-		/*try {
-			TimeUnit.SECONDS.sleep(2);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}*/
+		/*
+		 * try { TimeUnit.SECONDS.sleep(2); } catch (InterruptedException e) {
+		 * e.printStackTrace(); }
+		 */
 		// 处理week,nextweek
 		executor.execute(() -> pullRemoteConstellatory(weekHandler));
-		/*try {
-			TimeUnit.SECONDS.sleep(2);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}*/
+		/*
+		 * try { TimeUnit.SECONDS.sleep(2); } catch (InterruptedException e) {
+		 * e.printStackTrace(); }
+		 */
 		// 处理month
 		executor.execute(() -> pullRemoteConstellatory(monthHandler));
-		/*try {
-			TimeUnit.SECONDS.sleep(2);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}*/
+		/*
+		 * try { TimeUnit.SECONDS.sleep(2); } catch (InterruptedException e) {
+		 * e.printStackTrace(); }
+		 */
 		// 处理year
 		executor.execute(() -> pullRemoteConstellatory(yearHandler));
-		/*try {
-			TimeUnit.SECONDS.sleep(2);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}*/
+		/*
+		 * try { TimeUnit.SECONDS.sleep(2); } catch (InterruptedException e) {
+		 * e.printStackTrace(); }
+		 */
 
 		executor.shutdown();
 	}
@@ -376,11 +380,6 @@ public class ConstellatoryCache extends BaseCache {
 		}
 
 		@Override
-		protected List getResultList() {
-			return new ArrayList<>();
-		}
-
-		@Override
 		protected void finalProcess(List list) {
 			if (!CollectionUtils.isEmpty(list)) {
 				constellatoryDayMapper.batchSaveOrUpdate(list);
@@ -413,11 +412,6 @@ public class ConstellatoryCache extends BaseCache {
 		}
 
 		@Override
-		protected List getResultList() {
-			return new ArrayList<>();
-		}
-
-		@Override
 		protected void finalProcess(List list) {
 			if (!CollectionUtils.isEmpty(list)) {
 				constellatoryWeekMapper.batchSaveOrUpdate(list);
@@ -447,11 +441,6 @@ public class ConstellatoryCache extends BaseCache {
 		@Override
 		protected List<FortuneConditionEnum> getFortuneConditionEnums() {
 			return Arrays.asList(FortuneConditionEnum.MONTH);
-		}
-
-		@Override
-		protected List getResultList() {
-			return new ArrayList<>();
 		}
 
 		@Override
@@ -491,11 +480,6 @@ public class ConstellatoryCache extends BaseCache {
 		}
 
 		@Override
-		protected List getResultList() {
-			return new ArrayList<>();
-		}
-
-		@Override
 		protected void finalProcess(List list) {
 			if (!CollectionUtils.isEmpty(list)) {
 				constellatoryYearMapper.batchSaveOrUpdate(list);
@@ -503,19 +487,93 @@ public class ConstellatoryCache extends BaseCache {
 		}
 
 	}
-
+	
+	/**
+	 * 根据 星座枚举与查询条件枚举
+	 * 查询结果存入缓存
+	 * 这种方法在于会利用缓存不做重复的http请求但是数据库中的记录还是会继续插入有缺陷
+	 * @param constellatoryEnum
+	 * @param fortuneConditionEnum
+	 * @param params
+	 * @return
+	 */
+	public String getResult(ConstellatoryEnum constellatoryEnum,FortuneConditionEnum fortuneConditionEnum,Map<String, Object> params){
+		String cacheKey = StringManager.formatKeyString(CONSTELLATORY_CACGE_KEY, constellatoryEnum.getCode().toString(),fortuneConditionEnum.getName());
+		String result = redisCache.get(cacheKey);
+        if (!StringUtils.isNullOrEmpty(result)) {
+            return result;
+        }
+        params.put("consName", constellatoryEnum.getName());
+		params.put("type", fortuneConditionEnum.getName());
+		result = HttpClientUtil.postRequest(URL, params);
+		if (StringUtils.isNullOrEmpty(result)) {
+            return null;
+        }
+		redisCache.set(cacheKey,result);
+		return result;
+	}
+	
+	@Data
+	class ResultEntity{
+		private String result;
+		private boolean needLoad;
+	}
+	
+	/**
+	 * 就为了加一个返回值,判断是不是要重复插入数据库
+	 * @param constellatoryEnum
+	 * @param fortuneConditionEnum
+	 * @param params
+	 * @return
+	 */
+	public ResultEntity getResultEntity(ConstellatoryEnum constellatoryEnum,FortuneConditionEnum fortuneConditionEnum,Map<String, Object> params){
+		ResultEntity re = new ResultEntity();
+		re.setNeedLoad(true);
+		String cacheKey = StringManager.formatKeyString(CONSTELLATORY_CACGE_KEY, constellatoryEnum.getCode().toString(),fortuneConditionEnum.getName());
+		String result = redisCache.get(cacheKey);
+        if (!StringUtils.isNullOrEmpty(result)) {
+        	re.setResult(result);
+        	re.setNeedLoad(false);
+            return re;
+        }
+        params.put("consName", constellatoryEnum.getName());
+		params.put("type", fortuneConditionEnum.getName());
+		result = HttpClientUtil.postRequest(URL, params);
+		if (StringUtils.isNullOrEmpty(result)) {
+            return null;
+        }
+		redisCache.set(cacheKey,result);
+		re.setResult(result);
+		return re;
+	}
+	
 	abstract class RemoteConstellatoryHandler {
 		public void process() {
 			Map<String, Object> params = new HashMap<>();
 			params.put("key", APPKEY);
-			List list = getResultList();
+			List list = new ArrayList<>();
 			for (ConstellatoryEnum constellatoryEnum : ConstellatoryEnum.values()) {
 				for (FortuneConditionEnum fortuneConditionEnum : getFortuneConditionEnums()) {
-					params.put("consName", constellatoryEnum.getName());
+					/*params.put("consName", constellatoryEnum.getName());
 					params.put("type", fortuneConditionEnum.getName());
 					String result = HttpClientUtil.postRequest(URL, params);
-					JSONObject object = JSONObject.parseObject(result);
-					middleProcess(result, object, fortuneConditionEnum, constellatoryEnum, list);
+					JSONObject object = JSONObject.parseObject(result);*/
+					
+					//**************************************************************************************
+					/*String result = getResult(constellatoryEnum, fortuneConditionEnum, params);
+					if(!StringUtils.isNullOrEmpty(result)){
+						JSONObject object = JSONObject.parseObject(result);
+						middleProcess(result, object, fortuneConditionEnum, constellatoryEnum, list);
+					}*/
+					//**************************************************************************************
+					
+					
+					ResultEntity re = getResultEntity(constellatoryEnum, fortuneConditionEnum, params);
+					if(!java.util.Objects.isNull(re) && re.isNeedLoad()){
+						String result = re.getResult();
+						JSONObject object = JSONObject.parseObject(result);
+						middleProcess(result, object, fortuneConditionEnum, constellatoryEnum, list);
+					}
 				}
 			}
 			finalProcess(list);
@@ -528,7 +586,6 @@ public class ConstellatoryCache extends BaseCache {
 
 		protected abstract List<FortuneConditionEnum> getFortuneConditionEnums();
 
-		protected abstract List getResultList();
 	}
 
 	@Override
