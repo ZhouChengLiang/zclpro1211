@@ -1,14 +1,19 @@
 package org.zclpro.db.constellatory.entity;
 
+import java.io.Serializable;
+
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
 @Getter
 @Setter
-@ToString
-public class ConstellatoryDay {
-    private String dateId;
+public class ConstellatoryDay implements Serializable{
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -8886842847984946849L;
+
+	private String dateId;
 
     private String date;
 

@@ -20,27 +20,6 @@ public class ConstellatoryServiceTest {
 	private ConstellatoryService constellatoryService;
 	
 	@Test
-	public void test0(){
-		Instant start = Instant.now();
-		constellatoryService.pullConstellatory();
-		System.out.println("test0 pullConstellatory cost>>>>>>>"+Duration.between(start,  Instant.now()));
-	}
-	
-	@Test
-	public void test1(){
-		Instant start = Instant.now();
-		constellatoryService.pullConstellatory1();
-		System.out.println("test1 pullConstellatory cost>>>>>>>"+Duration.between(start,  Instant.now()));
-	}
-	
-	@Test
-	public void test2(){
-		Instant start = Instant.now();
-		constellatoryService.pullConstellatory2();
-		System.out.println("test2 pullConstellatory cost>>>>>>>"+Duration.between(start,  Instant.now()));
-	}
-	
-	@Test
 	public void test3(){
 		Instant start = Instant.now();
 		constellatoryService.pullConstellatory3();

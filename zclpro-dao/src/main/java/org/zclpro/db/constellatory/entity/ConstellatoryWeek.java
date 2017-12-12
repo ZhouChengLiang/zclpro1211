@@ -1,14 +1,19 @@
 package org.zclpro.db.constellatory.entity;
 
+import java.io.Serializable;
+
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
 @Getter
 @Setter
-@ToString
-public class ConstellatoryWeek {
-    private String year;
+public class ConstellatoryWeek implements Serializable{
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 4945668769857102403L;
+
+	private String year;
 
     private Integer weekth;
 
