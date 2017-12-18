@@ -8,10 +8,8 @@
     <result column="county_code" jdbcType="INTEGER" property="countyCode" />
   </resultMap>
   <insert id="insert" parameterType="org.zclpro.db.userexpint.entity.UserExpInt">
-    insert into user_exp_int (user_id, experience, integral, 
-      county_code)
-    values (#{userId,jdbcType=INTEGER}, #{experience,jdbcType=INTEGER}, #{integral,jdbcType=INTEGER}, 
-      #{countyCode,jdbcType=INTEGER})
+    insert into user_exp_int (user_id, experience, integral, county_code)
+    values (#{userId,jdbcType=INTEGER}, #{experience,jdbcType=INTEGER}, #{integral,jdbcType=INTEGER}, #{countyCode,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="org.zclpro.db.userexpint.entity.UserExpInt">
     insert into user_exp_int
@@ -43,5 +41,16 @@
         #{countyCode,jdbcType=INTEGER},
       </if>
     </trim>
+  </insert>
+  <insert id="batchSaveOrUpdate" parameterType="java.util.List">
+  	INSERT INTO user_exp_int(user_id, experience, integral, county_code) VALUES
+  		<foreach collection="list" item="item" index="index" separator=",">
+			(#{item.userId,jdbcType=INTEGER}, #{item.experience,jdbcType=INTEGER}, #{item.integral,jdbcType=INTEGER}, #{item.countyCode,jdbcType=INTEGER})
+		</foreach>
+	ON DUPLICATE KEY UPDATE
+	user_id = VALUES(user_id),
+	experience = VALUES(experience),
+	integral = VALUES(integral),
+	county_code = VALUES(county_code);
   </insert>
 </mapper>

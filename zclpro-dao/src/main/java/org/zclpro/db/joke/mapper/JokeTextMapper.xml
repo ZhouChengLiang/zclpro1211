@@ -8,10 +8,8 @@
     <result column="updatetime" jdbcType="TIMESTAMP" property="updatetime" />
   </resultMap>
   <insert id="insert" parameterType="org.zclpro.db.joke.entity.JokeText">
-    insert into joke_text (hash_id, content, unixtime, 
-      updatetime)
-    values (#{hashId,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR}, #{unixtime,jdbcType=INTEGER}, 
-      #{updatetime,jdbcType=TIMESTAMP})
+    insert into joke_text (hash_id, content, unixtime, updatetime) values 
+    (#{hashId,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR}, #{unixtime,jdbcType=INTEGER}, #{updatetime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="org.zclpro.db.joke.entity.JokeText">
     insert into joke_text
@@ -43,5 +41,16 @@
         #{updatetime,jdbcType=TIMESTAMP},
       </if>
     </trim>
+  </insert>
+  <insert id="batchSaveOrUpdate" parameterType="java.util.List">
+  	INSERT INTO joke_text(hash_id, content, unixtime, updatetime) VALUES
+  		<foreach collection="list" item="item" index="index" separator=",">
+			(#{item.hashId,jdbcType=VARCHAR}, #{item.content,jdbcType=VARCHAR}, #{item.unixtime,jdbcType=INTEGER}, #{item.updatetime,jdbcType=TIMESTAMP})
+		</foreach>
+	ON DUPLICATE KEY UPDATE
+	hash_id = VALUES(hash_id),
+	content = VALUES(content),
+	unixtime = VALUES(unixtime),
+	updatetime = VALUES(updatetime);
   </insert>
 </mapper>

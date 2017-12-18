@@ -20,5 +20,10 @@ public final class Constants {
      * 星座运势属性文件
      */
     public static final String CONSTELLATORY_PROPERTIES_PATH = "org/zclpro/service/constellatory/constellatory.properties";
+    
+    /**
+     * 笑话大全属性文件
+     */
+    public static final String JOKE_PROPERTIES_PATH = "org/zclpro/service/joke/joke.properties";
 
 }

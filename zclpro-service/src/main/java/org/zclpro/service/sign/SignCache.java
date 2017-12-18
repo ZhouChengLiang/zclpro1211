@@ -74,7 +74,7 @@ public class SignCache extends BaseCache{
 	
 	private final static String APPKEY = stringManager.getValue("appkey");
 	
-	private final static String URL = stringManager.getValue("url");;
+	private final static String URL = stringManager.getValue("url");
 	
 	private final static String SIGNCOMMONINFO = stringManager.getValue("signcommoninfo");
 	
