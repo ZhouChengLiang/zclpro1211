@@ -7,6 +7,9 @@
     <result column="integral" jdbcType="INTEGER" property="integral" />
     <result column="county_code" jdbcType="INTEGER" property="countyCode" />
   </resultMap>
+  <sql id="Base_Column_List">
+    user_id, experience, integral,county_code
+  </sql>
   <insert id="insert" parameterType="org.zclpro.db.userexpint.entity.UserExpInt">
     insert into user_exp_int (user_id, experience, integral, county_code)
     values (#{userId,jdbcType=INTEGER}, #{experience,jdbcType=INTEGER}, #{integral,jdbcType=INTEGER}, #{countyCode,jdbcType=INTEGER})
@@ -53,4 +56,11 @@
 	integral = VALUES(integral),
 	county_code = VALUES(county_code);
   </insert>
+  <select id="selectByCountyCode" resultMap="BaseResultMap">
+       SELECT <include refid="Base_Column_List"></include> FROM user_exp_int
+       WHERE 1 = 1
+       <if test="countyCode != null">
+           AND county_code = #{countyCode,jdbcType=INTEGER}
+       </if>
+  </select>
 </mapper>

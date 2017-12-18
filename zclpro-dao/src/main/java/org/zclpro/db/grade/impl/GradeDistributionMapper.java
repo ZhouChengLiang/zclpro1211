@@ -10,4 +10,6 @@ public interface GradeDistributionMapper {
 	List<GradeDistribution> queryGradeDistribution(GradeDistribution record);
 	
 	List<GradeDistribution> calcGradeDistribution();
+	
+	int batchSaveOrUpdate(List<GradeDistribution> list);
 }

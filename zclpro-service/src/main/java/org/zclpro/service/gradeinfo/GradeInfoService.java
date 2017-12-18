@@ -2,20 +2,25 @@ package org.zclpro.service.gradeinfo;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.time.DateFormatUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.zclpro.db.configmanage.entity.ConfigManage;
+import org.zclpro.db.grade.entity.GradeDistribution;
 import org.zclpro.db.grade.entity.GradeInfo;
 import org.zclpro.db.grade.impl.GradeDistributionMapper;
 import org.zclpro.db.grade.impl.GradeInfoMapper;
+import org.zclpro.db.userexpint.entity.UserExpInt;
+import org.zclpro.db.userexpint.impl.UserExpIntMapper;
 import org.zclpro.service.configmanage.ConfigManageCache;
-import org.zclpro.service.configmanage.ConfigManageService;
 import org.zclpro.service.configmanage.ConfigManageVO;
 
 import com.google.common.base.Preconditions;
@@ -39,7 +44,7 @@ public class GradeInfoService {
 	private GradeDistributionMapper gradeDistributionMapper;
 	
 	@Autowired
-    private ConfigManageService configManageService;
+	private UserExpIntMapper userExpIntMapper;
 	/**
 	 * 提供信息用户成长等级管理页面
 	 * @param countyCode
@@ -106,8 +111,9 @@ public class GradeInfoService {
 	/**
 	 * 提供给定时任务用来更新各等级下的人数
 	 */
+    @Deprecated
     @Transactional(rollbackFor = Exception.class)
-	public void calculateGradeInfo(){/*
+	public void calculateGradeInfo(){
     	Date curtime = new Date();
 		String curdate = DateFormatUtils.format(curtime, "yyyyMMdd");
 		List<UserExpInt> userExpIntList = userExpIntMapper.selectByCountyCode(null);
@@ -151,5 +157,49 @@ public class GradeInfoService {
 			}
 			gradeInfoCache.delGradeInfo_wrap(ids);
 		}
-	*/}
+	}
+    
+    /**
+     * 新的方法生成等级人员分布情况
+     */
+    @Transactional(rollbackFor = Exception.class)
+	public void generateGradeDistribution(){
+    	Date curtime = new Date();
+		String curdate = DateFormatUtils.format(curtime, "yyyyMMdd");
+		List<GradeDistribution> gradeDistributions = gradeDistributionMapper.calcGradeDistribution();
+		Map<Integer,List<GradeDistribution>> map = gradeDistributions.stream().collect(Collectors.groupingBy(GradeDistribution::getCountyCode));
+		for(Map.Entry<Integer, List<GradeDistribution>> entry:map.entrySet()){
+			Integer curCountyCode = entry.getKey().intValue();
+			List<Integer> ids = gradeInfoCache.getGradeInfosByCountyCode(curCountyCode);
+			if(!CollectionUtils.isEmpty(ids)){
+				gradeInfoMapper.batchUpdateByIds(ids);
+				List<GradeDistribution> list = new ArrayList<>();
+				ids.stream().forEach(
+						(id)->{
+								GradeDistribution record = new GradeDistribution();
+								record.setCountyCode(curCountyCode);
+								record.setCurdate(curdate);
+								record.setCurexp(gradeInfoCache.getGradeInfoFromCache(id).getRequiredExperience());
+								record.setCurusers(0);
+								record.setCurtime(curtime);
+								record.setCurgrade(id);
+								list.add(record);
+							}
+						);
+				gradeDistributionMapper.batchSaveOrUpdate(list);
+			}
+			List<GradeDistribution> result = entry.getValue(); 
+			for(GradeDistribution gd :result){
+				GradeInfo curGradeInfo = gradeInfoCache.getGradeInfoFromCache(gd.getCurgrade());
+				Integer curexp = curGradeInfo.getRequiredExperience();
+				curGradeInfo.setCurrentUsers(gd.getCurusers());
+				gd.setCurdate(curdate);
+				gd.setCurexp(curexp);
+				gd.setCurtime(curtime);
+				gradeInfoMapper.updateByPrimaryKeySelective(curGradeInfo);
+			}
+			gradeDistributionMapper.batchSaveOrUpdate(result);
+			gradeInfoCache.delGradeInfo_wrap(ids);
+		}
+	}
 }
