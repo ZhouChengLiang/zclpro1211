@@ -17,7 +17,7 @@ import com.xxl.job.core.log.XxlJobLogger;
  * @author Administrator
  *
  */
-@JobHander(value = "GradeInfo")
+@JobHander(value = "GradeDistribution")
 @Component
 public class GradeDistributionJobHandler extends IJobHandler{
 	@Autowired
