@@ -17,7 +17,7 @@ import com.xxl.job.core.log.XxlJobLogger;
  * @author Administrator
  *
  */
-@JobHander(value = "GradeDistributionLast")
+@JobHander(value = "GenerateGradeInfo")
 @Component
 public class GenerateGradeInfoCacheJobHandler extends IJobHandler{
 	@Autowired
