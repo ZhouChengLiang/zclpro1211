@@ -133,6 +133,7 @@ public class GradeInfoService {
 							record.setCurexp(gradeInfoCache.getGradeInfoFromCache(id).getRequiredExperience());
 							record.setCurusers(0);
 							record.setCurtime(curtime);
+							log.error("At step 1 curGradeInfo.getId()>>>>>>>>>>>>>>>>>>>>"+id);
 							record.setCurgrade(id);
 							gradeDistributionMapper.saveOrUpdate(record);
 							}
@@ -141,6 +142,7 @@ public class GradeInfoService {
 			Map<GradeInfo,List<UserExpInt>> innerMap = entry.getValue();
 			for(Map.Entry<GradeInfo,List<UserExpInt>> innerEntry:innerMap.entrySet()){
 				GradeInfo curGradeInfo = innerEntry.getKey();
+				log.error("At step 2 curGradeInfo.getId()>>>>>>>>>>>>>>>>>>>>"+curGradeInfo.getId());
 				Integer curUsers = innerEntry.getValue().size();
 				GradeDistribution record = new GradeDistribution();
 				Integer curgrade = curGradeInfo.getId();
@@ -191,10 +193,9 @@ public class GradeInfoService {
 			List<GradeDistribution> result = entry.getValue(); 
 			for(GradeDistribution gd :result){
 				GradeInfo curGradeInfo = gradeInfoCache.getGradeInfoFromCache(gd.getCurgrade());
-				Integer curexp = curGradeInfo.getRequiredExperience();
 				curGradeInfo.setCurrentUsers(gd.getCurusers());
 				gd.setCurdate(curdate);
-				gd.setCurexp(curexp);
+				gd.setCurexp(curGradeInfo.getRequiredExperience());
 				gd.setCurtime(curtime);
 				gradeInfoMapper.updateByPrimaryKeySelective(curGradeInfo);
 			}
