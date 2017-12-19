@@ -56,7 +56,6 @@ public class GradeInfoCache extends BaseCache{
 				keySortMap.put(String.valueOf(each.getId()), (double) each.getRequiredExperience());
 			}
 			redisCache.zadd(key, keySortMap);
-			redisCache.expire(key, expire);
 		}
 		Set<String> result = redisCache.zrangeByScore(key, Long.MIN_VALUE, Long.MAX_VALUE);
         if (CollectionUtils.isEmpty(result))
@@ -74,7 +73,7 @@ public class GradeInfoCache extends BaseCache{
                 redisCache.setEmpty(gradeInfoId.toString(), GradeInfo.class);
                 return null;
             }
-            redisCache.hmset(gradeInfo.getId().toString(), gradeInfo,expire);
+            redisCache.hmset(gradeInfo.getId().toString(), gradeInfo);
         }
 		return gradeInfo;
 	}

@@ -17,17 +17,17 @@ import com.xxl.job.core.log.XxlJobLogger;
  * @author Administrator
  *
  */
-@JobHander(value = "GradeDistribution")
+@JobHander(value = "GradeDistributionLast")
 @Component
-public class GradeDistributionJobHandler extends IJobHandler{
+public class GradeDistributionLastJobHandler extends IJobHandler{
 	@Autowired
 	private GradeInfoService gradeInfoService;
 	
 	@Override
 	public ReturnT<String> execute(String... params) throws Exception {
 		Instant start = Instant.now();
-		gradeInfoService.generateGradeDistribution();
-		XxlJobLogger.log(">>>>>>>>>It costs {0} execute GradeDistributionJobHandler<<<<<<<<<<", Duration.between(start, Instant.now()));
+		gradeInfoService.generateGradeDistribution_last();
+		XxlJobLogger.log(">>>>>>>>>It costs {0} execute GradeDistributionLastJobHandler<<<<<<<<<<", Duration.between(start, Instant.now()));
 		return ReturnT.SUCCESS;
 	}
 }

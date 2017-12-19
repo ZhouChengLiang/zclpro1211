@@ -62,4 +62,10 @@
 		curtime = VALUES(curtime),
 		county_code = VALUES(county_code);
   </insert>
+  <insert id="batchInsert" parameterType="java.util.List">
+  	INSERT INTO grade_distribution(curdate, curgrade, curexp,curusers,curtime,county_code) VALUES
+  		<foreach collection="list" item="item" index="index" separator=",">
+			(#{item.curdate,jdbcType=VARCHAR}, #{item.curgrade,jdbcType=INTEGER}, #{item.curexp,jdbcType=INTEGER},#{item.curusers,jdbcType=INTEGER},#{item.curtime,jdbcType=TIMESTAMP},#{item.countyCode,jdbcType=INTEGER})
+		</foreach>
+  </insert>
 </mapper>

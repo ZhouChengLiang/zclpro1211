@@ -174,7 +174,7 @@ public class GradeInfoService {
 			if(!CollectionUtils.isEmpty(ids)){
 				gradeInfoMapper.batchUpdateByIds(ids);
 				List<GradeDistribution> list = new ArrayList<>();
-				ids.stream().forEach(
+				ids.forEach(
 						(id)->{
 								GradeDistribution record = new GradeDistribution();
 								record.setCountyCode(curCountyCode);
@@ -200,6 +200,54 @@ public class GradeInfoService {
 			}
 			gradeDistributionMapper.batchSaveOrUpdate(result);
 			gradeInfoCache.delGradeInfo_wrap(ids);
+		}
+	}
+    
+    /**
+     * 最最新的计算等级分布
+     */
+	public void generateGradeDistribution_last(){
+    	Date curtime = new Date();
+		String curdate = DateFormatUtils.format(curtime, "yyyyMMdd");
+		List<GradeDistribution> gradeDistributions = gradeDistributionMapper.calcGradeDistribution();
+		Map<Integer,List<GradeDistribution>> map = gradeDistributions.stream().collect(Collectors.groupingBy(GradeDistribution::getCountyCode));
+		List<GradeDistribution> list = new ArrayList<>();
+		List<Integer> idsList = new ArrayList<>();
+		for(Map.Entry<Integer, List<GradeDistribution>> entry:map.entrySet()){
+			Integer curCountyCode = entry.getKey().intValue();
+			List<Integer> ids = gradeInfoCache.getGradeInfosByCountyCode(curCountyCode);
+			if(!CollectionUtils.isEmpty(ids)){
+				gradeInfoMapper.batchUpdateByIds(ids);
+				idsList.addAll(ids);
+				ids.forEach(
+						(id)->{
+								GradeDistribution record = new GradeDistribution();
+								record.setCountyCode(curCountyCode);
+								record.setCurdate(curdate);
+								record.setCurexp(gradeInfoCache.getGradeInfoFromCache(id).getRequiredExperience());
+								record.setCurusers(0);
+								record.setCurtime(curtime);
+								record.setCurgrade(id);
+								list.add(record);
+							}
+						);
+			}
+			List<GradeDistribution> result = entry.getValue(); 
+			for(GradeDistribution gd :result){
+				GradeInfo curGradeInfo = gradeInfoCache.getGradeInfoFromCache(gd.getCurgrade());
+				Integer curexp = curGradeInfo.getRequiredExperience();
+				curGradeInfo.setCurrentUsers(gd.getCurusers());
+				gd.setCurdate(curdate);
+				gd.setCurexp(curexp);
+				gd.setCurtime(curtime);
+				gradeInfoMapper.updateByPrimaryKeySelective(curGradeInfo);
+			}
+			list.addAll(result);
+		}
+		if(!CollectionUtils.isEmpty(list)){
+			gradeDistributionMapper.deleteByCondition(curdate);
+			gradeDistributionMapper.batchSaveOrUpdate(list);
+			gradeInfoCache.delGradeInfo_wrap(idsList);
 		}
 	}
 }
