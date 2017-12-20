@@ -5,9 +5,11 @@ import org.zclpro.db.common.IPOJOCache;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
+@ToString
 public class GradeInfo extends IPOJOCache{
     private Integer id;
 

@@ -142,6 +142,7 @@ public class GradeInfoService {
 			Map<GradeInfo,List<UserExpInt>> innerMap = entry.getValue();
 			for(Map.Entry<GradeInfo,List<UserExpInt>> innerEntry:innerMap.entrySet()){
 				GradeInfo curGradeInfo = innerEntry.getKey();
+				log.error("Take attention GradeInfo>>>>>>>>>>>>>>>>>>>>"+curGradeInfo);
 				log.error("At step 2 curGradeInfo.getId()>>>>>>>>>>>>>>>>>>>>"+curGradeInfo.getId());
 				Integer curUsers = innerEntry.getValue().size();
 				GradeDistribution record = new GradeDistribution();
