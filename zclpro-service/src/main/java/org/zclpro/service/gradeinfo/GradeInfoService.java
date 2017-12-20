@@ -120,6 +120,7 @@ public class GradeInfoService {
 		Map<Integer,Map<GradeInfo,List<UserExpInt>>> map = userExpIntList.stream()
 								.collect(Collectors.groupingBy(UserExpInt::getCountyCode,
 										Collectors.groupingBy(e->getCurrentGradeInfo(e.getExperience(),e.getCountyCode()))));
+		log.error("Take attention map>>>>>>>>>>>>>>>>>>>>"+map);
 		for(Map.Entry<Integer, Map<GradeInfo,List<UserExpInt>>> entry:map.entrySet()){
 			Integer curCountyCode = entry.getKey().intValue();
 			List<Integer> ids = gradeInfoCache.getGradeInfosByCountyCode(curCountyCode);
@@ -140,6 +141,7 @@ public class GradeInfoService {
 						);
 			}
 			Map<GradeInfo,List<UserExpInt>> innerMap = entry.getValue();
+			log.error("Take attention innerMap>>>>>>>>>>>>>>>>>>>>"+innerMap);
 			for(Map.Entry<GradeInfo,List<UserExpInt>> innerEntry:innerMap.entrySet()){
 				GradeInfo curGradeInfo = innerEntry.getKey();
 				log.error("Take attention GradeInfo>>>>>>>>>>>>>>>>>>>>"+curGradeInfo);
