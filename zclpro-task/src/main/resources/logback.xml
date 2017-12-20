@@ -7,9 +7,9 @@
     </appender>
 
     <appender name="successFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${log4j.file.path}/task/success.log</file>
+        <file>${catalina.home}/task/success.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${log4j.file.path}/task/success.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>${catalina.home}/task/success.%d{yyyy-MM-dd}.log</fileNamePattern>
             <maxHistory>30</maxHistory>
             <totalSizeCap>3GB</totalSizeCap>
         </rollingPolicy>
@@ -18,14 +18,14 @@
         </encoder>
     </appender>
     <appender name="error_file" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${log4j.file.path}/task/error.log</file>
+        <file>${catalina.home}/task/error.log</file>
         <filter class="ch.qos.logback.classic.filter.LevelFilter">
             <level>ERROR</level>
             <onMatch>ACCEPT</onMatch>
             <onMismatch>DENY</onMismatch>
         </filter>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${log4j.file.path}/task/error.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>${catalina.home}/task/error.%d{yyyy-MM-dd}.log</fileNamePattern>
             <maxHistory>30</maxHistory>
             <totalSizeCap>3GB</totalSizeCap>
         </rollingPolicy>
