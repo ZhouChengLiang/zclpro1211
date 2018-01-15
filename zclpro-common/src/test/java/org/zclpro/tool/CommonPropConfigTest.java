@@ -19,7 +19,7 @@ public class CommonPropConfigTest {
 	
 	@Test
     public void test0() {
-		String pattern = "*";
+		String pattern = "*year:2018*";
 		myJedis.delKeysWithPattern(pattern);
     }
 

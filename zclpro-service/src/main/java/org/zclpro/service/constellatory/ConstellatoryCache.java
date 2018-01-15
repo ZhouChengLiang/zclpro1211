@@ -75,7 +75,6 @@ public class ConstellatoryCache extends BaseCache {
 		executor.execute(() -> pullRemoteConstellatory(monthHandler));
 		// 处理year
 		executor.execute(() -> pullRemoteConstellatory(yearHandler));
-
 		executor.shutdown();
 	}
 
@@ -114,19 +113,27 @@ public class ConstellatoryCache extends BaseCache {
 				params.put("type", fortuneConditionEnum.getName());
 				String result = HttpClientUtil.postRequest(URL, params);
 				if (!StringUtils.isNullOrEmpty(result)) {
-					JSONObject object = JSONObject.parseObject(result);
-					ConstellatoryDay constellatoryDay = JSONObject.parseObject(result, ConstellatoryDay.class);
-					constellatoryDay.setCode(constellatoryEnum.getCode());
-					constellatoryDay.setDatetimeStr(object.getString("datetime"));
-					constellatoryDay.setFriend(object.getString("QFriend"));
-					String dateId = curdate.toString("yyyyMMdd");
-					if (Objects.equal(fortuneConditionEnum, FortuneConditionEnum.TOMOROW)) {
-						dateId = curdate.plusDays(1).toString("yyyyMMdd");
+					try {
+						JSONObject object = JSONObject.parseObject(result);
+						if(object.getIntValue("error_code") == 0){
+							ConstellatoryDay constellatoryDay = JSONObject.parseObject(result, ConstellatoryDay.class);
+							constellatoryDay.setCode(constellatoryEnum.getCode());
+							constellatoryDay.setDatetimeStr(object.getString("datetime"));
+							constellatoryDay.setFriend(object.getString("QFriend"));
+							String dateId = curdate.toString("yyyyMMdd");
+							if (Objects.equal(fortuneConditionEnum, FortuneConditionEnum.TOMOROW)) {
+								dateId = curdate.plusDays(1).toString("yyyyMMdd");
+							}
+							constellatoryDay.setDateId(dateId);
+							constellatoryDay.setAlls(object.getString("all"));
+							list.add(constellatoryDay);
+							redisCache.set(cacheKey, SerializationUtils.serialize(constellatoryDay));
+						}
+					} catch (Exception e) {
+						System.out.println(e);
+						throw e;
 					}
-					constellatoryDay.setDateId(dateId);
-					constellatoryDay.setAlls(object.getString("all"));
-					list.add(constellatoryDay);
-					redisCache.set(cacheKey, SerializationUtils.serialize(constellatoryDay));
+					
 				}
 			}
 		}
@@ -161,10 +168,10 @@ public class ConstellatoryCache extends BaseCache {
 			LocalDate curdate = LocalDate.now();
 			String year = String.valueOf(curdate.getYear());
 			String week = String.valueOf(curdate.getWeekOfWeekyear());
-			if (Objects.equal(fortuneConditionEnum, FortuneConditionEnum.NEXTWEEK)) {
+			/*if (Objects.equal(fortuneConditionEnum, FortuneConditionEnum.NEXTWEEK)) {
 				week = String.valueOf(curdate.withDayOfWeek(1).plusWeeks(1).getWeekOfWeekyear());
 				year = String.valueOf(curdate.withDayOfWeek(1).plusWeeks(1).getWeekyear());
-			}
+			}*/
 			byte[] cacheKey = StringManager.formatKeyString("consCode:{0}:year:{1}:week:{2}",
 					constellatoryEnum.getCode().toString(), year, week).getBytes(Charsets.UTF_8);
 			byte[] redisBytes = redisCache.get(cacheKey);
@@ -177,11 +184,20 @@ public class ConstellatoryCache extends BaseCache {
 				params.put("type", fortuneConditionEnum.getName());
 				String result = HttpClientUtil.postRequest(URL, params);
 				if (!StringUtils.isNullOrEmpty(result)) {
-					ConstellatoryWeek constellatoryWeek = JSONObject.parseObject(result, ConstellatoryWeek.class);
-					constellatoryWeek.setCode(constellatoryEnum.getCode());
-					constellatoryWeek.setYear(year);
-					list.add(constellatoryWeek);
-					redisCache.set(cacheKey, SerializationUtils.serialize(constellatoryWeek));
+					try {
+						JSONObject object = JSONObject.parseObject(result);
+						if(object.getIntValue("error_code") == 0){
+							ConstellatoryWeek constellatoryWeek = JSONObject.parseObject(result, ConstellatoryWeek.class);
+							constellatoryWeek.setCode(constellatoryEnum.getCode());
+							constellatoryWeek.setYear(year);
+							list.add(constellatoryWeek);
+							redisCache.set(cacheKey, SerializationUtils.serialize(constellatoryWeek));
+						}
+					} catch (Exception e) {
+						System.out.println(e);
+						throw e;
+					}
+					
 				}
 			}
 
@@ -189,7 +205,7 @@ public class ConstellatoryCache extends BaseCache {
 
 		@Override
 		protected List<FortuneConditionEnum> getFortuneConditionEnums() {
-			return Arrays.asList(FortuneConditionEnum.WEEK, FortuneConditionEnum.NEXTWEEK);
+			return Arrays.asList(FortuneConditionEnum.WEEK/*, FortuneConditionEnum.NEXTWEEK*/);
 		}
 
 		@Override
@@ -228,13 +244,21 @@ public class ConstellatoryCache extends BaseCache {
 				params.put("type", fortuneConditionEnum.getName());
 				String result = HttpClientUtil.postRequest(URL, params);
 				if (!StringUtils.isNullOrEmpty(result)) {
-					JSONObject object = JSONObject.parseObject(result);
-					ConstellatoryMonth constellatoryMonth = JSONObject.parseObject(result, ConstellatoryMonth.class);
-					constellatoryMonth.setCode(constellatoryEnum.getCode());
-					constellatoryMonth.setYear(year);
-					constellatoryMonth.setAlls(object.getString("all"));
-					list.add(constellatoryMonth);
-					redisCache.set(cacheKey, SerializationUtils.serialize(constellatoryMonth));
+					try {
+						JSONObject object = JSONObject.parseObject(result);
+						if(object.getIntValue("error_code") == 0){
+							ConstellatoryMonth constellatoryMonth = JSONObject.parseObject(result, ConstellatoryMonth.class);
+							constellatoryMonth.setCode(constellatoryEnum.getCode());
+							constellatoryMonth.setYear(year);
+							constellatoryMonth.setAlls(object.getString("all"));
+							list.add(constellatoryMonth);
+							redisCache.set(cacheKey, SerializationUtils.serialize(constellatoryMonth));
+						}
+					} catch (Exception e) {
+						System.out.println(e);
+						throw e;
+					}
+					
 				}
 			}
 		}
@@ -281,17 +305,25 @@ public class ConstellatoryCache extends BaseCache {
 				params.put("type", fortuneConditionEnum.getName());
 				String result = HttpClientUtil.postRequest(URL, params);
 				if (!StringUtils.isNullOrEmpty(result)) {
-					JSONObject object = JSONObject.parseObject(result);
-					ConstellatoryYear constellatoryYear = JSONObject.parseObject(result, ConstellatoryYear.class);
-					constellatoryYear.setCode(constellatoryEnum.getCode());
-					constellatoryYear.setShortInfo(object.getJSONObject("mima").get("info").toString());
-					constellatoryYear.setDetailInfo(object.getJSONObject("mima").getJSONArray("text").getString(0));
-					constellatoryYear.setCareer(object.getJSONArray("career").getString(0));
-					constellatoryYear.setLove(object.getJSONArray("love").getString(0));
-					constellatoryYear.setHealth(object.getJSONArray("health").getString(0));
-					constellatoryYear.setFinance(object.getJSONArray("finance").getString(0));
-					list.add(constellatoryYear);
-					redisCache.set(cacheKey, SerializationUtils.serialize(constellatoryYear));
+					try {
+						JSONObject object = JSONObject.parseObject(result);
+						if(object.getIntValue("error_code") == 0){
+							ConstellatoryYear constellatoryYear = JSONObject.parseObject(result, ConstellatoryYear.class);
+							constellatoryYear.setCode(constellatoryEnum.getCode());
+							constellatoryYear.setShortInfo(object.getJSONObject("mima").get("info").toString());
+							constellatoryYear.setDetailInfo(object.getJSONObject("mima").getJSONArray("text").getString(0));
+							constellatoryYear.setCareer(object.getJSONArray("career").getString(0));
+							constellatoryYear.setLove(object.getJSONArray("love").getString(0));
+							constellatoryYear.setHealth(object.getJSONArray("health").getString(0));
+							constellatoryYear.setFinance(object.getJSONArray("finance").getString(0));
+							list.add(constellatoryYear);
+							redisCache.set(cacheKey, SerializationUtils.serialize(constellatoryYear));
+						}
+					} catch (Exception e) {
+						System.out.println(e);
+						throw e;
+					}
+					
 				}
 			}
 		}
