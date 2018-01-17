@@ -205,7 +205,7 @@ public class ConstellatoryCache extends BaseCache {
 
 		@Override
 		protected List<FortuneConditionEnum> getFortuneConditionEnums() {
-			return Arrays.asList(FortuneConditionEnum.WEEK/*, FortuneConditionEnum.NEXTWEEK*/);
+			return Arrays.asList(FortuneConditionEnum.WEEK);
 		}
 
 		@Override
@@ -214,6 +214,45 @@ public class ConstellatoryCache extends BaseCache {
 				constellatoryWeekMapper.batchSaveOrUpdate(list);
 			}
 		}
+	}
+	/**
+	 * 单独的拉取星座week信息
+	 */
+	public void pullConstellatory_week(FortuneConditionEnum fortuneConditionEnum, ConstellatoryEnum constellatoryEnum) {
+		Map<String, Object> params = new HashMap<>();
+		boolean needSaveToDB = true;
+		LocalDate curdate = LocalDate.now();
+		String year = String.valueOf(curdate.getYear());
+		String week = String.valueOf(curdate.getWeekOfWeekyear());
+		byte[] cacheKey = StringManager.formatKeyString("consCode:{0}:year:{1}:week:{2}",
+				constellatoryEnum.getCode().toString(), year, week).getBytes(Charsets.UTF_8);
+		byte[] redisBytes = redisCache.get(cacheKey);
+		if (redisBytes != null) {
+			needSaveToDB = false;
+		}
+		if (needSaveToDB) {
+			params.put("key", APPKEY);
+			params.put("consName", constellatoryEnum.getName());
+			params.put("type", fortuneConditionEnum.getName());
+			String result = HttpClientUtil.postRequest(URL, params);
+			if (!StringUtils.isNullOrEmpty(result)) {
+				try {
+					JSONObject object = JSONObject.parseObject(result);
+					if(object.getIntValue("error_code") == 0){
+						ConstellatoryWeek constellatoryWeek = JSONObject.parseObject(result, ConstellatoryWeek.class);
+						constellatoryWeek.setCode(constellatoryEnum.getCode());
+						constellatoryWeek.setYear(year);
+						redisCache.set(cacheKey, SerializationUtils.serialize(constellatoryWeek));
+						constellatoryWeekMapper.batchSaveOrUpdate(Arrays.asList(constellatoryWeek));
+					}
+				} catch (Exception e) {
+					System.out.println(e);
+					throw e;
+				}
+				
+			}
+		}
+
 	}
 
 	/**

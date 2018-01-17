@@ -10,6 +10,8 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.zclpro.service.constellatory.ConstellatoryService;
+import org.zclpro.service.enums.ConstellatoryEnum;
+import org.zclpro.service.enums.FortuneConditionEnum;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration({"classpath:spring-service.xml"})
@@ -24,5 +26,12 @@ public class ConstellatoryServiceTest {
 		Instant start = Instant.now();
 		constellatoryService.pullConstellatory3();
 		System.out.println("test3 pullConstellatory cost>>>>>>>"+Duration.between(start,  Instant.now()));
+	}
+	
+	@Test
+	public void test0(){
+		for(ConstellatoryEnum ce :ConstellatoryEnum.values()){
+			constellatoryService.pullConstellatory_week(FortuneConditionEnum.WEEK, ce);
+		}
 	}
 }
