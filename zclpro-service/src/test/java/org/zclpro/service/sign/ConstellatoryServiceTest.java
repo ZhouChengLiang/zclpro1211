@@ -34,4 +34,12 @@ public class ConstellatoryServiceTest {
 			constellatoryService.pullConstellatory_week(FortuneConditionEnum.WEEK, ce);
 		}
 	}
+	
+	@Test
+	public void test1(){
+		for(ConstellatoryEnum ce :ConstellatoryEnum.values()){
+//			constellatoryService.pullConstellatory_day(FortuneConditionEnum.TODAY, ce);
+			constellatoryService.pullConstellatory_day(FortuneConditionEnum.TOMOROW, ce);
+		}
+	}
 }

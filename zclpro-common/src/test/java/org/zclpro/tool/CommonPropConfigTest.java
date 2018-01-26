@@ -19,12 +19,13 @@ public class CommonPropConfigTest {
 	
 	@Test
     public void test0() {
-		String pattern = "*year:2018*";
+		String pattern = "*year:2018:week*";
 		myJedis.delKeysWithPattern(pattern);
     }
 
     @Test
     public void test1() {
-        
+    	String pattern = "consCode:*:day:20180127";
+		myJedis.delKeysWithPattern(pattern);
     }
 }

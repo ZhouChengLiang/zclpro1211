@@ -151,7 +151,58 @@ public class ConstellatoryCache extends BaseCache {
 		}
 
 	}
-
+	
+	/**
+	 * 单独拉取 tomrrow 与 day 的星座运势信息
+	 * @param fortuneConditionEnum
+	 * @param constellatoryEnum
+	 */
+	public void pullConstellatory_day(FortuneConditionEnum fortuneConditionEnum, ConstellatoryEnum constellatoryEnum){
+		Map<String, Object> params = new HashMap<>();
+		boolean needSaveToDB = true;
+		LocalDate curdate = LocalDate.now();
+		String dayWithMonthYear = curdate.toString("yyyyMMdd");
+		if (Objects.equal(fortuneConditionEnum, FortuneConditionEnum.TOMOROW)) {
+			dayWithMonthYear = curdate.plusDays(1).toString("yyyyMMdd");
+		}
+		byte[] cacheKey = StringManager
+				.formatKeyString("consCode:{0}:day:{1}", constellatoryEnum.getCode().toString(), dayWithMonthYear)
+				.getBytes(Charsets.UTF_8);
+		byte[] redisBytes = redisCache.get(cacheKey);
+		if (redisBytes != null) {
+			needSaveToDB = false;
+		}
+		if (needSaveToDB) {
+			params.put("key", APPKEY);
+			params.put("consName", constellatoryEnum.getName());
+			params.put("type", fortuneConditionEnum.getName());
+			String result = HttpClientUtil.postRequest(URL, params);
+			if (!StringUtils.isNullOrEmpty(result)) {
+				try {
+					JSONObject object = JSONObject.parseObject(result);
+					if(object.getIntValue("error_code") == 0){
+						ConstellatoryDay constellatoryDay = JSONObject.parseObject(result, ConstellatoryDay.class);
+						constellatoryDay.setCode(constellatoryEnum.getCode());
+						constellatoryDay.setDatetimeStr(object.getString("datetime"));
+						constellatoryDay.setFriend(object.getString("QFriend"));
+						String dateId = curdate.toString("yyyyMMdd");
+						if (Objects.equal(fortuneConditionEnum, FortuneConditionEnum.TOMOROW)) {
+							dateId = curdate.plusDays(1).toString("yyyyMMdd");
+						}
+						constellatoryDay.setDateId(dateId);
+						constellatoryDay.setAlls(object.getString("all"));
+						redisCache.set(cacheKey, SerializationUtils.serialize(constellatoryDay));
+						constellatoryDayMapper.batchSaveOrUpdate(Arrays.asList(constellatoryDay));
+					}
+				} catch (Exception e) {
+					System.out.println(e);
+					throw e;
+				}
+				
+			}
+		}
+	
+	}
 	/**
 	 * 处理十二星座 关于 week,nextweek的信息
 	 * 
