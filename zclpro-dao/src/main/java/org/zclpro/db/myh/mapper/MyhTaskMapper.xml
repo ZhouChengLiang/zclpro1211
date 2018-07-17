@@ -2,65 +2,6 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.zclpro.db.myh.impl.MyhTaskMapper">
-	<resultMap type="MyhHospitalInfoVo" id="myhHospitalInfoVoMap">
-		<result property="hospitalId" column="hospital_id"/>
-		<result property="hospitalName" column="hospital_name"/>
-		<result property="hospitalTag" column="hospital_tag"/>	
-		<result property="hospitalAddress" column="hospital_address"/>
-		<result property="areaCode" column="area_code"/>
-		<result property="rank" column="rank"/>
-	</resultMap>
-	<resultMap type="MyhHospitalDepartmentVo" id="myhHospitalDepartmentVoMap">
-		<result property="departmentId" column="department_id"/>
-		<result property="departmentName" column="department_name"/>	
-		<result property="parentDepartmentId" column="parent_department_id"/>
-		<result property="hospitalId" column="hospital_id"/>
-		<result property="departmentLevel" column="department_level"/>
-		<result property="areaCode" column="area_code"/>
-	</resultMap>
-	<resultMap type="MyhHospitalDoctorVo" id="myhHospitalDoctorVoMap">
-		<result property="areaCode" column="area_code"/>
-		<result property="doctorId" column="doctor_id"/>
-		<result property="doctorName" column="doctor_name"/>	
-		<result property="doctorImage" column="doctor_image"/>
-		<result property="doctorTitles" column="doctor_title"/>
-		<result property="doctorGoodAt" column="doctor_good_at"/>
-		<result property="rank" column="rank"/>
-		<result property="hospitalId" column="hospital_id"/>
-	</resultMap>
-	<resultMap type="MyhDoctorDutyVo" id="myhDoctorDutyVoMap">
-		<result property="areaCode" column="area_code"/>
-		<result property="hospitalName" column="hospital_name"/>
-		<result property="departmentName" column="department_name"/>	
-		<result property="dutyType" column="duty_type"/>
-		<result property="dutyMon" column="duty_mon"/>
-		<result property="dutyTues" column="duty_tues"/>
-		<result property="dutyWed" column="duty_wed"/>
-		<result property="dutyThurs" column="duty_thurs"/>
-		<result property="dutyFri" column="duty_fri"/>
-		<result property="dutySat" column="duty_sat"/>
-		<result property="dutySun" column="duty_sun"/>
-	</resultMap>
-	<insert id="singleInsertHospitalInfo" parameterType="MyhHospitalInfoDto">
-        INSERT IGNORE INTO myh_hospital_info(
-  			`hospital_id`,
-  			`hospital_name`,
-  			`hospital_tag`,
-  			`hospital_address`,
-  			`area_code`,
-		  	`area_name`,
-		  	`rank`
-        )VALUES(
-	        #{hospitalId},
-  			#{hospitalName},
-  			#{hospitalTag},
-  			#{hospitalAddress},
-  			#{areaCode},
-		  	#{areaName},
-		  	#{rank}
-        )
-    </insert>
-    
 	<insert id="batchInsertHospitalInfo" parameterType="java.util.List">
         INSERT IGNORE INTO myh_hospital_info(
   			`hospital_id`,
@@ -112,7 +53,7 @@
 		</foreach>
     </insert>
     
-	<insert id="singleInsertHospitalDoctor" parameterType="MyhHospitalDoctorDto">
+	<insert id="singleInsertHospitalDoctor" parameterType="org.zclpro.db.myh.entity.MyhHospitalDoctorDto">
         INSERT IGNORE INTO myh_hospital_doctor(
   			`doctor_id`,
   			`doctor_name`,

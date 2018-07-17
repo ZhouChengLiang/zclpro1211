@@ -1,4 +1,4 @@
-package com.yidai.model.dto.myh;
+package org.zclpro.db.myh.entity;
 
 import java.io.Serializable;
 

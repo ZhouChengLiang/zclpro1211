@@ -3,6 +3,7 @@ package org.zclpro.common.tool;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Properties;
+import java.util.concurrent.Executor;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
@@ -13,6 +14,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.client.RestTemplate;
 import org.zclpro.common.redistool.MyJedisCommands;
 import org.zclpro.common.redistool.RedisConnectionFactory;
@@ -87,5 +89,15 @@ public class CommonProplConfig {
 		ClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory(httpClient);
 		return new RestTemplate(requestFactory);
 	}
+	
+	@Bean(name = "taskExecutor")
+    public Executor executorService() {
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        executor.setCorePoolSize(10);
+        executor.setQueueCapacity(Integer.MAX_VALUE);
+        executor.setMaxPoolSize(200);
+        executor.setAllowCoreThreadTimeOut(true);
+        return executor;
+    }
 	
 }

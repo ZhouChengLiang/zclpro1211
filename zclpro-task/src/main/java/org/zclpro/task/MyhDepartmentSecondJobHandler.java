@@ -9,20 +9,20 @@ import com.xxl.job.core.handler.IJobHandler;
 import com.xxl.job.core.handler.annotation.JobHander;
 
 /**
- * 拉取名医汇数据
+ * 拉取名医汇医院一级科室数据
  * @author Administrator
  *
  */
-@JobHander(value = "MyhTaskTotalTogether")
+@JobHander(value = "MyhDepartmentSecond")
 @Component
-public class MyhTaskJobHandler extends IJobHandler{
+public class MyhDepartmentSecondJobHandler extends IJobHandler{
 	
 	@Autowired
 	private MyhTaskService myhTaskService;
 	
 	@Override
 	public ReturnT<String> execute(String... params) throws Exception {
-		myhTaskService.grabMyhData();
+		myhTaskService.grabDepartmentLevelSecondDatas();
 		return ReturnT.SUCCESS;
 	}
 
