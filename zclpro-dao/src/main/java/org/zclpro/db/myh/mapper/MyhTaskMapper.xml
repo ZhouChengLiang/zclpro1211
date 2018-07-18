@@ -3,7 +3,7 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.zclpro.db.myh.impl.MyhTaskMapper">
 	<insert id="batchInsertHospitalInfo" parameterType="java.util.List">
-        INSERT  INTO myh_hospital_info(
+        INSERT INTO myh_hospital_info(
   			`hospital_id`,
   			`hospital_name`,
   			`hospital_tag`,
@@ -20,13 +20,13 @@
 		hospital_name = VALUES(hospital_name),
 		hospital_tag = VALUES(hospital_tag),
 		hospital_address = VALUES(hospital_address),
-		department_name = VALUES(department_name),
 		area_code = VALUES(area_code),
-		area_name = VALUES(area_name);
+		area_name = VALUES(area_name),
+		rank = VALUES(rank);
     </insert>
     
 	<insert id="batchInsertHospitalDepartment" parameterType="java.util.List">
-        INSERT IGNORE INTO myh_hospital_department(
+        INSERT INTO myh_hospital_department(
   			`department_id`,
   			`department_name`,
   			`parent_department_id`,
@@ -49,7 +49,7 @@
     </insert>
 			
 	<insert id="batchInsertHospitalDoctor" parameterType="java.util.List">
-        INSERT IGNORE INTO myh_hospital_doctor(
+        INSERT INTO myh_hospital_doctor(
   			`doctor_id`,
   			`doctor_name`,
   			`doctor_image`,
@@ -83,7 +83,7 @@
     </insert>
     
 	<insert id="singleInsertHospitalDoctor" parameterType="org.zclpro.db.myh.entity.MyhHospitalDoctorDto">
-        INSERT IGNORE INTO myh_hospital_doctor(
+        INSERT INTO myh_hospital_doctor(
   			`doctor_id`,
   			`doctor_name`,
   			`doctor_image`,
