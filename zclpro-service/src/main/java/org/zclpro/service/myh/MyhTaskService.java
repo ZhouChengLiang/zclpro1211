@@ -121,7 +121,7 @@ public class MyhTaskService {
 					dto.setRank(rank);
 					dtolist.add(dto);
 				}
-				RandomUtil.sleepTime(6);
+				TimeUnit.SECONDS.sleep(6);
 			}
 			if (Util.isNotNull(dtolist)) {
 				logger.info("开始入库名医汇医院信息到数据库~~~~~~~~~~~");
@@ -150,8 +150,9 @@ public class MyhTaskService {
 	public void grabDepartmentLevelFirstDatas() {
 		logger.info("开始抓取一级科室数据~~~~~~~~~~~~~~~~~~~~~~~");
 		while (true) {
+			DepartmentUrlDto departmentUrl = null;
 			try {
-				DepartmentUrlDto departmentUrl = departmentLevelFirstQueue.poll(5, TimeUnit.MINUTES);
+				departmentUrl = departmentLevelFirstQueue.poll(5, TimeUnit.MINUTES);
 				if (departmentUrl == null) {
 					break;
 				}
@@ -188,9 +189,8 @@ public class MyhTaskService {
 					myhTaskCache.batchInsertHospitalDepartment(list);
 				}
 				TimeUnit.SECONDS.sleep(6);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
+			} catch (Exception e) {
+				departmentLevelFirstQueue.offer(departmentUrl);
 				e.printStackTrace();
 			}
 		}
@@ -203,8 +203,9 @@ public class MyhTaskService {
 	public void grabDepartmentLevelSecondDatas() {
 		logger.info("开始抓取二级科室数据~~~~~~~~~~~~~~~~~~~~~~~");
 		while (true) {
+			DepartmentUrlDto departmentUrl = null;
 			try {
-				DepartmentUrlDto departmentUrl = departmentLevelSecondQueue.poll(5, TimeUnit.MINUTES);
+				departmentUrl = departmentLevelSecondQueue.poll(5, TimeUnit.MINUTES);
 				if (departmentUrl == null) {
 					break;
 				}
@@ -245,9 +246,8 @@ public class MyhTaskService {
 					myhTaskCache.batchInsertHospitalDepartment(list);
 				}
 				TimeUnit.SECONDS.sleep(6);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
+			} catch (Exception e) {
+				departmentLevelSecondQueue.offer(departmentUrl);
 				e.printStackTrace();
 			}
 		}
@@ -260,8 +260,9 @@ public class MyhTaskService {
 	public void grabPrepareDoctorDatas() {
 		logger.info("开始准备抓取科室下的医生数据~~~~~~~~~~~~~~~~~~~~~~~");
 		while (true) {
+			DoctorUrlDto doctorUrlDto = null;
 			try {
-				DoctorUrlDto doctorUrlDto = doctorPrepareUrlQueue.poll(5, TimeUnit.MINUTES);
+				doctorUrlDto = doctorPrepareUrlQueue.poll(5, TimeUnit.MINUTES);
 				List<DoctorUrlDto> doctorWithPageUrls = new ArrayList<>();
 				if (doctorUrlDto == null) {
 					break;
@@ -290,9 +291,8 @@ public class MyhTaskService {
 					}
 					TimeUnit.SECONDS.sleep(6);
 				}
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
+			} catch (Exception e) {
+				doctorPrepareUrlQueue.offer(doctorUrlDto);
 				e.printStackTrace();
 			}
 		}
@@ -305,8 +305,9 @@ public class MyhTaskService {
 	public void grabRealDoctorDatas() {
 		logger.info("开始抓取二级科室下的医生数据~~~~~~~~~~~~~~~~~~~~~~~");
 		while (true) {
+			DoctorUrlDto doctorUrlDto = null;
 			try {
-				DoctorUrlDto doctorUrlDto = doctorRealUrlQueue.poll(5, TimeUnit.MINUTES);
+				doctorUrlDto = doctorRealUrlQueue.poll(5, TimeUnit.MINUTES);
 				if (doctorUrlDto == null) {
 					break;
 				}
@@ -353,9 +354,8 @@ public class MyhTaskService {
 					myhTaskCache.batchSaveOrUpdateDoctorDuty(myhDoctorDutyDtos);
 				}
 				TimeUnit.SECONDS.sleep(6);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
+			} catch (Exception e) {
+				doctorRealUrlQueue.offer(doctorUrlDto);
 				e.printStackTrace();
 			}
 		}
