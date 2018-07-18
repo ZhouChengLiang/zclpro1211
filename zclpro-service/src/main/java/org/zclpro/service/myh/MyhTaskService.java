@@ -1,6 +1,5 @@
 package org.zclpro.service.myh;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -277,7 +276,8 @@ public class MyhTaskService {
 				for (DoctorUrlDto dto : doctorWithPageUrls) {
 					Connection innerConn = Jsoup.connect(dto.getUrl());
 					connectionWrapper(innerConn);
-					Elements innerEles = doc.select("div.H_doc_con > ul > li");
+					Document innerDoc = innerConn.get();
+					Elements innerEles = innerDoc.select("div.H_doc_con > ul > li");
 					for (Element ele : innerEles) {
 						String url = ele.select("a").get(0).absUrl("href");
 						String doctorTitles = ele.select("span.fl.doctor_titles").text();
