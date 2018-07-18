@@ -50,7 +50,7 @@ public class MyhTaskMapperTest {
 		MyhHospitalDepartmentDto dto = new MyhHospitalDepartmentDto();
 		dto.setAreaCode("330000");
 		dto.setAreaName("zhejiangsheng");
-		dto.setDepartmentId(1);
+		dto.setDepartmentId(1111111);
 		dto.setDepartmentLevel(1);
 		dto.setDepartmentName("部门1");
 		dto.setHospitalId(391);
@@ -88,7 +88,7 @@ public class MyhTaskMapperTest {
 		MyhDoctorDutyDto dto = new MyhDoctorDutyDto();
 		dto.setAreaCode("330000");
 		dto.setAreaName("杭州市");
-		dto.setDepartmentId(1);
+		dto.setDepartmentId(1111111111);
 		dto.setDepartmentName("科室1");
 		dto.setDoctorId(1);
 		dto.setDoctorName("医生1");

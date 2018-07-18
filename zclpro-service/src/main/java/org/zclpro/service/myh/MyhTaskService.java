@@ -74,8 +74,9 @@ public class MyhTaskService {
 				Elements eles = doc.select("div.H_tra.w900 a");
 				Collections.reverse(eles);
 				MyhGrabUtil.getHospitalWithPageUrls(eles, hospitalUrl, hospitalWithPageUrls);
-				RandomUtil.sleepTime(6);
+				TimeUnit.SECONDS.sleep(6);
 			}
+			Collections.reverse(hospitalWithPageUrls);
 			for (HospitalUrlDto url : hospitalWithPageUrls) {
 				Connection conn = Jsoup.connect(url.getUrl());
 				connectionWrapper(conn);
