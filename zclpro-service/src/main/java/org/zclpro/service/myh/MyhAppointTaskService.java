@@ -3,6 +3,7 @@ package org.zclpro.service.myh;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.Executor;
 import java.util.concurrent.LinkedBlockingDeque;
@@ -22,20 +23,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.zclpro.db.myh.entity.DepartmentUrlDto;
 import org.zclpro.db.myh.entity.DoctorUrlDto;
-import org.zclpro.db.myh.entity.HospitalUrlDto;
 import org.zclpro.db.myh.entity.MyhDoctorDutyDto;
+import org.zclpro.db.myh.entity.MyhEnum;
 import org.zclpro.db.myh.entity.MyhHospitalDepartmentDto;
 import org.zclpro.db.myh.entity.MyhHospitalDoctorDto;
-import org.zclpro.db.myh.entity.MyhHospitalInfoDto;
 
 /**
  * @author zclwo
- * @date 2018年7月10日
+ * @date 2018年7月21日
  */
 @Service
-public class MyhTaskService {
+public class MyhAppointTaskService {
 
-	private static final Logger logger = LoggerFactory.getLogger(MyhTaskService.class);
+	private static final Logger logger = LoggerFactory.getLogger(MyhAppointTaskService.class);
 
 	@Autowired
 	private MyhTaskCache myhTaskCache;
@@ -50,8 +50,8 @@ public class MyhTaskService {
 	@Resource(name = "taskExecutor")
     private Executor taskExecutor;
 	
-	public void grabMyhData() {
-		taskExecutor.execute(() -> grabHospitalDatas());
+	public void grabMyhData(String...params) throws Exception {
+		taskExecutor.execute(() -> grabHospitalDatas(params));
 		taskExecutor.execute(() -> grabDepartmentLevelFirstDatas());
 		taskExecutor.execute(() -> grabDepartmentLevelSecondDatas());
 		taskExecutor.execute(() -> grabPrepareDoctorDatas());
@@ -60,78 +60,23 @@ public class MyhTaskService {
 
 	/**
 	 * 抓取医院数据
-	 * 
+	 * 330000_491
 	 */
-	public void grabHospitalDatas() {
-		List<HospitalUrlDto> hospitalUrls = MyhGrabUtil.getHospitalUrls();
-		List<HospitalUrlDto> hospitalWithPageUrls = new ArrayList<>();
-		List<MyhHospitalInfoDto> dtolist = new ArrayList<>();
-		try {
-			for (HospitalUrlDto hospitalUrl : hospitalUrls) {
-				Connection conn = Jsoup.connect(hospitalUrl.getUrl());
-				connectionWrapper(conn);
-				Document doc = conn.get();
-				Elements eles = doc.select("div.H_tra.w900 a");
-				Collections.reverse(eles);
-				MyhGrabUtil.getHospitalWithPageUrls(eles, hospitalUrl, hospitalWithPageUrls);
-				TimeUnit.SECONDS.sleep(6);
-			}
-			//Collections.reverse(hospitalWithPageUrls);
-			for (HospitalUrlDto url : hospitalWithPageUrls) {
-				Connection conn = Jsoup.connect(url.getUrl());
-				connectionWrapper(conn);
-				Document doucments = conn.get();
-				Elements elements = doucments.select("ul.H_main li.H_list");
-				for (Element element : elements) {
-					MyhHospitalInfoDto dto = new MyhHospitalInfoDto();
-					String hospitalName = element.select("h3").text();
-					String hospitalDetailUrl = MyhGrabUtil.MYH_MAIN_URL + element.select("h3 a").attr("href");
-					String departmentOfUrl = MyhGrabUtil.MYH_GUAHAO_URL
-							+ element.select("h3 a").attr("href").replace(".html", "/");
-					Integer hospitalId = Integer.valueOf(hospitalDetailUrl
-							.substring(hospitalDetailUrl.lastIndexOf("_") + 1, hospitalDetailUrl.lastIndexOf(".")));
-					String key = StringUtil.replaceStr(RedisConstant.MYH_HOSPITAL_DATA, url.getMyhEnum().getCode());
-					// if(Util.isNotNull(redisCacheFacade.hget(key,
-					// hospitalId.toString()))){
-					// logger.info("【"+url.getMyhEnum().getName()+"】下
-					// "+hospitalName+"已录入过~~~");
-					// continue;
-					// }
-					Integer rank = Integer.valueOf(element.select("div.H_no").text().replace("NO.", ""));
-					DepartmentUrlDto departmentUrl = new DepartmentUrlDto();
-					departmentUrl.setMyhEnum(url.getMyhEnum());
-					departmentUrl.setUrl(departmentOfUrl);
-					departmentLevelFirstQueue.offer(departmentUrl);
-					Elements spanEles = element.select("span.ispublic");
-					List<String> tags = new ArrayList<>();
-					for (Element ele : spanEles) {
-						tags.add(ele.text());
-					}
-					String hospitalTag = StringUtils.join(tags, ",");
-					String hospitalAddress = "";
-					if (Util.isNotNull(element.select("dl dd")) && element.select("dl dd").size() > 1) {
-						hospitalAddress = element.select("dl dd").get(1).text();
-					}
-					dto.setHospitalId(hospitalId);
-					dto.setHospitalName(hospitalName);
-					dto.setHospitalAddress(hospitalAddress);
-					dto.setHospitalTag(hospitalTag);
-					dto.setAreaName(url.getMyhEnum().getName());
-					dto.setAreaCode(url.getMyhEnum().getCode());
-					dto.setRank(rank);
-					dtolist.add(dto);
-				}
-				TimeUnit.SECONDS.sleep(6);
-			}
-			if (Util.isNotNull(dtolist)) {
-				logger.info("开始入库名医汇医院信息到数据库~~~~~~~~~~~");
-				myhTaskCache.batchInsertHospitalInfo(dtolist);
-			}
-		} catch (Exception e) {
-			logger.error("爬取名医汇的医院信息时出错", e);
+	public void grabHospitalDatas(String... params) {
+		if(Objects.isNull(params)){
+			return;
+		}
+		for(String str:params){
+			String areaCode = str.substring(0, str.lastIndexOf("_"));
+			String hospitalId = str.substring(str.lastIndexOf("_")+1, str.length());
+			DepartmentUrlDto departmentUrl = new DepartmentUrlDto();
+		    departmentUrl.setMyhEnum(MyhEnum.getByCode(areaCode));
+		    departmentUrl.setUrl(StringUtil.replaceStr(MyhGrabUtil.MYH_GUAHAO_MAIN_URL,hospitalId));
+		    logger.info(">>>>> "+StringUtil.replaceStr(MyhGrabUtil.MYH_GUAHAO_MAIN_URL,hospitalId));
+		    departmentLevelFirstQueue.offer(departmentUrl);
 		}
 	}
-
+	
 	/**
 	 * 包裹Connection 添加头信息
 	 *
@@ -153,6 +98,7 @@ public class MyhTaskService {
 			DepartmentUrlDto departmentUrl = null;
 			try {
 				departmentUrl = departmentLevelFirstQueue.poll(5, TimeUnit.MINUTES);
+				System.out.println("departmentUrl >>>> "+departmentUrl);
 				if (departmentUrl == null) {
 					break;
 				}

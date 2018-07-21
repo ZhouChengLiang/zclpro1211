@@ -18,6 +18,8 @@ public class MyhGrabUtil {
   public static final String MYH_MAIN_URL = "http://www.mingyihui.net";
   
   public static final String MYH_GUAHAO_URL = "http://www.mingyihui.net/guahao";
+  
+  public static final String MYH_GUAHAO_MAIN_URL = "http://www.mingyihui.net/guahao/hospital_{0}/";
 
   public static final String MYH_HOSPITAL_URL = "http://www.mingyihui.net/{0}_hospital.html";
   

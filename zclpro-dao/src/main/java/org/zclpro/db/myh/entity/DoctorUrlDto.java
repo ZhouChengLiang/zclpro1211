@@ -51,5 +51,10 @@ public class DoctorUrlDto implements Serializable{
   public void setDoctorTitles(String doctorTitles) {
     this.doctorTitles = doctorTitles;
   }
+
+@Override
+public String toString() {
+	return "DoctorUrlDto [url=" + url + ", rank=" + rank + ", doctorTitles=" + doctorTitles + "]";
+}
   
 }
