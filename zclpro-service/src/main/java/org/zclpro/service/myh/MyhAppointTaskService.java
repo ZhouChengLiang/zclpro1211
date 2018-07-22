@@ -137,6 +137,8 @@ public class MyhAppointTaskService {
 			} catch (Exception e) {
 				departmentLevelFirstQueue.offer(departmentUrl);
 				e.printStackTrace();
+				logger.error(e.getMessage());
+				logger.error("grabDepartmentLevelFirstDatas Url >>> "+departmentUrl.getUrl());
 			}
 		}
 		logger.info("一级科室数据抓取完毕~~~~~~~~~~~~~~~~~~~~~~~");
@@ -193,6 +195,8 @@ public class MyhAppointTaskService {
 			} catch (Exception e) {
 				departmentLevelSecondQueue.offer(departmentUrl);
 				e.printStackTrace();
+				logger.error(e.getMessage());
+				logger.error("grabDepartmentLevelSecondDatas Url >>> "+departmentUrl.getUrl());
 			}
 		}
 		logger.info("二级科室数据抓取完毕~~~~~~~~~~~~~~~~~~~~~~~");
@@ -239,6 +243,7 @@ public class MyhAppointTaskService {
 			} catch (Exception e) {
 				doctorPrepareUrlQueue.offer(doctorUrlDto);
 				e.printStackTrace();
+				logger.error("grabPrepareDoctorDatas Url >>> "+doctorUrlDto.getUrl());
 			}
 		}
 		logger.info("科室下准备抓取医生数据完毕~~~~~~~~~~~~~~~~~~~~~~~");
@@ -283,9 +288,9 @@ public class MyhAppointTaskService {
 				dto.setHospitalId(hospitalId);
 				dto.setAreaCode(doctorUrlDto.getMyhEnum().getCode());
 				dto.setAreaName(doctorUrlDto.getMyhEnum().getName());
-				String doctorImage = StringUtil.replaceStr("image/system/doctor_head_pic_{0}.png",
-						NumberUtils.getRandomCode(2));
+				String doctorImage = StringUtil.replaceStr("image/system/doctor_head_pic_{0}.png",NumberUtils.getRandomCode(2));
 				dto.setDoctorImage(doctorImage);
+				logger.info("开始入库医生数据~~~~~~areaCode >>> "+doctorUrlDto.getMyhEnum().getCode()+" hospitalId >>>"+hospitalId+" departmentId >>> "+departmentId+" doctorId >>>"+doctorId+" doctorName >>> "+doctorName);
 				myhTaskCache.singleInsertHospitalDoctor(dto);
 				List<MyhDoctorDutyDto> myhDoctorDutyDtos = new ArrayList<>();
 				Elements elementAM = doc.select("div.out_call > table > tbody > tr:nth-child(2) > td");
@@ -295,13 +300,15 @@ public class MyhAppointTaskService {
 				Elements elementNG = doc.select("div.out_call > table > tbody > tr:nth-child(4) > td");
 				addMyhDoctorDutyDto(elementNG, myhDoctorDutyDtos, dto, MyhHospitalDoctorTypeEnum.NG);
 				if (Util.isNotNull(myhDoctorDutyDtos)) {
-					logger.info("开始入库值班医生数据~~~~~~~~~~~~~~~~~~~~~~~");
+					logger.info("开始入库值班医生值班数据~~~~~~ 总计 "+myhDoctorDutyDtos.size()+" 条");
 					myhTaskCache.batchSaveOrUpdateDoctorDuty(myhDoctorDutyDtos);
 				}
 				TimeUnit.SECONDS.sleep(6);
 			} catch (Exception e) {
 				doctorRealUrlQueue.offer(doctorUrlDto);
 				e.printStackTrace();
+				logger.error(e.getMessage());
+				logger.error("grabRealDoctorDatas Url >>> "+doctorUrlDto.getUrl());
 			}
 		}
 		logger.info("二级科室下抓取医生数据完毕~~~~~~~~~~~~~~~~~~~~~~~");
